@@ -92,7 +92,12 @@
         .action-bar { display: flex; gap: 10px; }
         .btn-action { border-radius: 50px; font-size: 13px; font-weight: 600; padding: 6px 15px; display: flex; align-items: center; gap: 5px; }
         
-        /* প্রিন্ট করার সময় শুধু জাজমেন্ট দেখাবে */
+        /* পেজিনেশন ডিজাইন */
+        .pagination { justify-content: center; margin-top: 30px; }
+        .page-link { color: var(--text-dark); border: none; margin: 0 5px; border-radius: 5px; font-weight: 600; }
+        .page-link:hover, .page-item.active .page-link { background-color: var(--accent-color); color: white; }
+        .page-item.disabled .page-link { background-color: transparent; color: #ccc; }
+
         @media print {
             body * { visibility: hidden; }
             #readerView, #readerView * { visibility: visible; }
@@ -140,7 +145,7 @@
                 <div class="search-wrapper">
                     <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder)...">
                     <button class="btn-filter" onclick="toggleAdvSearch()" title="Advanced Filter"><i class="fas fa-sliders-h"></i></button>
-                    <button class="btn-search" onclick="performSearch('simple')"><i class="fas fa-search"></i></button>
+                    <button class="btn-search" onclick="triggerSearch(1)"><i class="fas fa-search"></i></button>
                 </div>
 
                 <div class="adv-search-panel" id="advSearchForm">
@@ -163,7 +168,7 @@
                             <input type="text" id="advPage" class="form-control form-control-sm" placeholder="45">
                         </div>
                         <div class="col-12 col-md-2 d-flex align-items-end">
-                            <button class="btn btn-dark btn-sm w-100 mt-2 mt-md-0" onclick="performSearch('advanced')">Find Case</button>
+                            <button class="btn btn-dark btn-sm w-100 mt-2 mt-md-0" onclick="triggerSearch(1, 'advanced')">Find Case</button>
                         </div>
                     </div>
                 </div>
@@ -182,6 +187,8 @@
 
     <div class="container mt-4">
         <div id="resultsArea"></div>
+        <nav id="paginationNav" style="display:none;"><ul class="pagination" id="paginationList"></ul></nav>
+
         <div id="readerView" class="p-4 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px; font-family: 'Times New Roman', serif;"></div>
         
         <div id="bookmarkArea" style="display:none;" class="mb-5">
@@ -200,48 +207,13 @@
     <div class="packages-section" id="packages">
         <div class="container">
             <h3 class="text-center fw-bold mb-4">পেমেন্ট <span style="color:var(--accent-color)">সম্পন্ন করুন</span></h3>
-            
             <div class="row g-3 justify-content-center">
-                <div class="col-md-3 col-sm-6">
-                    <div class="package-card">
-                        <i class="fas fa-calendar-day"></i>
-                        <h5>মাসিক</h5>
-                        <div class="h3 fw-bold my-2">১৯৯৳</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank" class="btn-pay">Pay Now</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="package-card" style="border: 2px solid var(--accent-color);">
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best</span>
-                        <i class="fas fa-calendar-alt"></i>
-                        <h5>ত্রৈমাসিক</h5>
-                        <div class="h3 fw-bold my-2">৪৯৯৳</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank" class="btn-pay">Pay Now</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="package-card">
-                        <i class="fas fa-calendar-check"></i>
-                        <h5>ষান্মাসিক</h5>
-                        <div class="h3 fw-bold my-2">৭০০৳</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt700/LO7ESu" target="_blank" class="btn-pay">Pay Now</a>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="package-card">
-                        <i class="fas fa-award"></i>
-                        <h5>বার্ষিক</h5>
-                        <div class="h3 fw-bold my-2">১২০০৳</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank" class="btn-pay">Pay Now</a>
-                    </div>
-                </div>
+                <div class="col-md-3 col-sm-6"><div class="package-card"><i class="fas fa-calendar-day"></i><h5>মাসিক</h5><div class="h3 fw-bold my-2">১৯৯৳</div><a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank" class="btn-pay">Pay Now</a></div></div>
+                <div class="col-md-3 col-sm-6"><div class="package-card" style="border: 2px solid var(--accent-color);"><span class="badge bg-danger position-absolute top-0 end-0 m-2">Best</span><i class="fas fa-calendar-alt"></i><h5>ত্রৈমাসিক</h5><div class="h3 fw-bold my-2">৪৯৯৳</div><a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank" class="btn-pay">Pay Now</a></div></div>
+                <div class="col-md-3 col-sm-6"><div class="package-card"><i class="fas fa-calendar-check"></i><h5>ষান্মাসিক</h5><div class="h3 fw-bold my-2">৭০০৳</div><a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt700/LO7ESu" target="_blank" class="btn-pay">Pay Now</a></div></div>
+                <div class="col-md-3 col-sm-6"><div class="package-card"><i class="fas fa-award"></i><h5>বার্ষিক</h5><div class="h3 fw-bold my-2">১২০০৳</div><a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank" class="btn-pay">Pay Now</a></div></div>
             </div>
-
-            <div class="text-center mt-5">
-                <button class="btn btn-success btn-lg px-5 rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                    <i class="fas fa-check-double me-2"></i> পেমেন্ট কনফার্ম করুন
-                </button>
-            </div>
+            <div class="text-center mt-5"><button class="btn btn-success btn-lg px-5 rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#paymentModal"><i class="fas fa-check-double me-2"></i> পেমেন্ট কনফার্ম করুন</button></div>
         </div>
     </div>
 
@@ -257,87 +229,12 @@
 
     <a href="https://wa.me/8801911008518" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
-    <div class="modal fade" id="loginModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Member Login</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4 text-center">
-                    <p class="text-muted mb-3">আপনার ইমেইল এড্রেস দিয়ে লগইন করুন।</p>
-                    <input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com">
-                    <button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="checkEmailModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-5">
-                <div class="modal-body">
-                    <i class="fas fa-paper-plane fa-4x text-success mb-4"></i>
-                    <h3 class="fw-bold mb-2">Check Your Email</h3>
-                    <p class="text-muted">আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে।</p>
-                    <button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="premiumWarningModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title text-dark">🔒 Login Required</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4 text-center">
-                    <p class="lead">এটি একটি <strong>Premium</strong> জাজমেন্ট।</p>
-                    <p class="text-muted mb-4">পড়ার জন্য আপনাকে লগইন করতে হবে।</p>
-                    <button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="paymentModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> পেমেন্ট ভেরিফিকেশন ফরম</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
-                        <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_subject" value="New Payment Request">
-                        <div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div>
-                        <div class="mb-3"><label class="form-label">মোবাইল</label><input type="text" name="Phone" class="form-control" required></div>
-                        <div class="mb-3"><label class="form-label">ইমেইল</label><input type="email" name="Email" class="form-control" required></div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3"><label class="form-label">TrxID</label><input type="text" name="TrxID" class="form-control" required></div>
-                            <div class="col-md-6 mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select" required><option>১৯৯৳/১মাস</option><option>৪৯৯৳/৩মাস</option><option>৬৯৯৳/৬মাস</option><option>১২০০৳/বার্ষিক </option></select></div>
-                        </div>
-                        <div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-lg">সাবমিট করুন</button></div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="profileModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <div class="modal-body">
-                    <h4 class="fw-bold mb-3">My Account</h4>
-                    <div id="profileInfo">Checking...</div>
-                    <button class="btn btn-outline-danger btn-sm mt-3 px-4" onclick="logout()">Logout</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Member Login</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="text-muted mb-3">আপনার ইমেইল এড্রেস দিয়ে লগইন করুন।</p><input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com"><button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button></div></div></div></div>
+    <div class="modal fade" id="checkEmailModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-paper-plane fa-4x text-success mb-4"></i><h3 class="fw-bold mb-2">Check Your Email</h3><p class="text-muted">আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে।</p><button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK</button></div></div></div></div>
+    <div class="modal fade" id="premiumWarningModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning"><h5 class="modal-title text-dark">🔒 Login Required</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="lead">এটি একটি <strong>Premium</strong> জাজমেন্ট।</p><p class="text-muted mb-4">পড়ার জন্য আপনাকে লগইন করতে হবে।</p><button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button></div></div></div></div>
+    
+    <div class="modal fade" id="paymentModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> পেমেন্ট ভেরিফিকেশন ফরম</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_subject" value="New Payment Request"><div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div><div class="mb-3"><label class="form-label">মোবাইল</label><input type="text" name="Phone" class="form-control" required></div><div class="mb-3"><label class="form-label">ইমেইল</label><input type="email" name="Email" class="form-control" required></div><div class="row"><div class="col-md-6 mb-3"><label class="form-label">TrxID</label><input type="text" name="TrxID" class="form-control" required></div><div class="col-md-6 mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select" required><option>Monthly</option><option>Yearly</option></select></div></div><div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-lg">সাবমিট করুন</button></div></form></div></div></div></div>
+    <div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="modal-body"><h4 class="fw-bold mb-3">My Account</h4><div id="profileInfo">Checking...</div><button class="btn btn-outline-danger btn-sm mt-3 px-4" onclick="logout()">Logout</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -351,6 +248,11 @@
         let currentUser = null;
         let subStatus = false;
         let subExpiry = "";
+        
+        // পেজিনেশন ভেরিয়েবল
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let currentSearchType = 'simple'; // 'simple' or 'advanced'
 
         async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
@@ -375,11 +277,7 @@
         }
         checkAuth();
 
-        function openLoginModal() {
-            document.getElementById('loginEmailInput').value = '';
-            new bootstrap.Modal(document.getElementById('loginModal')).show();
-        }
-
+        function openLoginModal() { document.getElementById('loginEmailInput').value = ''; new bootstrap.Modal(document.getElementById('loginModal')).show(); }
         async function submitLogin() {
             const email = document.getElementById('loginEmailInput').value;
             if(!email) { alert("Please enter email."); return; }
@@ -388,34 +286,27 @@
             if(!error) new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
             else alert("Error: " + error.message);
         }
-
-        function triggerLoginFromModal() {
-            bootstrap.Modal.getInstance(document.getElementById('premiumWarningModal')).hide();
-            openLoginModal();
-        }
-
+        function triggerLoginFromModal() { bootstrap.Modal.getInstance(document.getElementById('premiumWarningModal')).hide(); openLoginModal(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
         function toggleAdvSearch() { document.getElementById('advSearchForm').style.display = document.getElementById('advSearchForm').style.display === 'block' ? 'none' : 'block'; }
-        
         function resetHome() { location.reload(); }
+        
+        document.querySelectorAll('.nav-link-close').forEach(item => { item.addEventListener('click', () => { const toggler = document.querySelector('.navbar-toggler'); const collapse = document.querySelector('.navbar-collapse'); if (window.getComputedStyle(toggler).display !== 'none' && collapse.classList.contains('show')) toggler.click(); }); });
+        function showSection(sec) { document.getElementById('packages').style.display = 'block'; document.getElementById('featuresSection').style.display = 'block'; document.getElementById('bookmarkArea').style.display = 'none'; document.getElementById('homeSection').scrollIntoView({behavior: 'smooth'}); }
+        async function showMyBookmarks() { if(!currentUser) { openLoginModal(); return; } document.getElementById('homeSection').style.padding = "20px 0"; document.getElementById('featuresSection').style.display = 'none'; document.getElementById('packages').style.display = 'none'; document.getElementById('resultsArea').innerHTML = ""; document.getElementById('readerView').style.display = "none"; document.getElementById('paginationNav').style.display = "none"; const bmArea = document.getElementById('bookmarkArea'); bmArea.style.display = 'block'; const list = document.getElementById('bookmarkList'); list.innerHTML = '<div class="text-center"><div class="spinner-border"></div></div>'; const { data, error } = await _supabase.from('bookmarks').select('*').eq('email', currentUser.email); if(!data || data.length === 0) { list.innerHTML = '<div class="alert alert-secondary">No bookmarks found.</div>'; return; } list.innerHTML = ""; data.forEach(item => { const div = document.createElement('div'); div.className = 'result-card'; div.onclick = () => loadJudgment({title: item.case_title, citation: item.case_citation, case_anchor: item.case_anchor, github_filename: item.github_filename, is_premium: true}); div.innerHTML = `<h6>${item.case_title}</h6><span class="badge bg-secondary">${item.case_citation}</span>`; list.appendChild(div); }); }
 
-        document.querySelectorAll('.nav-link-close').forEach(item => {
-            item.addEventListener('click', () => {
-                const toggler = document.querySelector('.navbar-toggler');
-                const collapse = document.querySelector('.navbar-collapse');
-                if (window.getComputedStyle(toggler).display !== 'none' && collapse.classList.contains('show')) toggler.click();
-            });
-        });
-
-        function showSection(sec) { 
-            document.getElementById('packages').style.display = 'block'; 
-            document.getElementById('featuresSection').style.display = 'block';
-            document.getElementById('bookmarkArea').style.display = 'none';
-            document.getElementById('homeSection').scrollIntoView({behavior: 'smooth'}); 
+        // পেজিনেশন এবং সাইটেশন কন্ট্রোল সার্চ ফাংশন
+        function triggerSearch(page, type = null) {
+            if (type) currentSearchType = type; // টাইপ আপডেট করা
+            performSearch(page);
         }
 
-        async function performSearch(type) {
+        async function performSearch(page = 1) {
+            currentPage = page;
             const resultsDiv = document.getElementById('resultsArea');
+            const paginationNav = document.getElementById('paginationNav');
+            
+            // UI রিসেট
             document.getElementById('readerView').style.display = 'none';
             document.getElementById('bookmarkArea').style.display = 'none';
             document.getElementById('paywallMsg').style.display = 'none';
@@ -423,21 +314,22 @@
             document.getElementById('featuresSection').style.display = 'none';
             document.getElementById('homeSection').style.padding = "20px 0";
 
-            if (type !== 'advanced' && !document.getElementById('searchInput').value.trim()) {
+            if (currentSearchType !== 'advanced' && !document.getElementById('searchInput').value.trim()) {
                 alert("দয়া করে সার্চ বক্সে কিছু লিখুন।");
                 return;
             }
 
             resultsDiv.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
             
-            let queryBuilder = _supabase.from('cases').select('*');
+            let queryBuilder = _supabase.from('cases').select('*', { count: 'exact' });
             let highlightTerm = "";
 
-            if (type === 'advanced') {
+            if (currentSearchType === 'advanced') {
                 const jour = document.getElementById('advJournal').value;
                 const vol = document.getElementById('advVol').value;
                 const div = document.getElementById('advDiv').value;
                 const pg = document.getElementById('advPage').value;
+                
                 if (!jour || !vol || !div || !pg) { 
                     alert("Advanced Search-এর জন্য সব ঘর পূরণ বাধ্যতামূলক।");
                     resultsDiv.innerHTML = "";
@@ -452,18 +344,33 @@
                 highlightTerm = text;
             }
 
-            const { data, error } = await queryBuilder.limit(20);
+            // পেজিনেশন লজিক (Range)
+            const from = (page - 1) * itemsPerPage;
+            const to = from + itemsPerPage - 1;
 
-            if (error || !data.length) {
+            const { data, error, count } = await queryBuilder.range(from, to);
+
+            if (error || !data || data.length === 0) {
                 resultsDiv.innerHTML = '<div class="text-center mt-5 text-muted"><h5>No cases found.</h5></div>';
                 document.getElementById('packages').style.display = 'block';
+                paginationNav.style.display = 'none';
                 return;
             }
 
-            resultsDiv.innerHTML = `<p class="text-muted small mb-3 ms-1">Found ${data.length} results</p>`;
+            resultsDiv.innerHTML = `<p class="text-muted small mb-3 ms-1">Found ${count} results (Page ${page})</p>`;
+            
             data.forEach(item => {
                 const safeHeadnote = item.headnote || "";
                 const highlightedHeadnote = highlightText(safeHeadnote, highlightTerm);
+                
+                // সাইটেশন লজিক (প্রিমিয়াম চেক)
+                let citationHtml = '';
+                if (currentUser && subStatus) {
+                    citationHtml = `<span class="badge bg-light text-dark border">${item.citation}</span>`;
+                } else {
+                    citationHtml = `<span class="badge bg-secondary opacity-50"><i class="fas fa-lock small"></i> Premium Only</span>`;
+                }
+
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.onclick = () => loadJudgment(item);
@@ -472,11 +379,59 @@
                         <h5 class="mb-1" style="color:#1a237e; font-weight:700;">${item.title}</h5>
                         ${item.is_premium ? '<i class="fas fa-lock text-danger small"></i>' : '<i class="fas fa-unlock text-success small"></i>'}
                     </div>
-                    <div><span class="badge bg-light text-dark border">${item.citation}</span> <span class="small text-muted ms-1">${item.division || ''}</span></div>
+                    <div class="mb-2">
+                        ${citationHtml}
+                        <span class="small text-muted ms-1">${item.division || ''}</span>
+                    </div>
                     <div class="headnote-text">${highlightedHeadnote}</div>
                 `;
                 resultsDiv.appendChild(div);
             });
+
+            // পেজিনেশন রেন্ডার
+            renderPagination(count, page);
+        }
+
+        // পেজিনেশন বাটন তৈরি
+        function renderPagination(totalItems, currentPage) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationList = document.getElementById('paginationList');
+            const nav = document.getElementById('paginationNav');
+            
+            if (totalPages <= 1) {
+                nav.style.display = 'none';
+                return;
+            }
+
+            nav.style.display = 'block';
+            paginationList.innerHTML = '';
+
+            // Previous Button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<button class="page-link" onclick="triggerSearch(${currentPage - 1})">Prev</button>`;
+            paginationList.appendChild(prevLi);
+
+            // Page Numbers (Show max 5 pages for clean UI)
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<button class="page-link" onclick="triggerSearch(${i})">${i}</button>`;
+                paginationList.appendChild(li);
+            }
+
+            // Next Button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<button class="page-link" onclick="triggerSearch(${currentPage + 1})">Next</button>`;
+            paginationList.appendChild(nextLi);
         }
 
         function highlightText(text, keyword) {
@@ -491,9 +446,11 @@
                 document.getElementById('resultsArea').innerHTML = '';
                 document.getElementById('paywallMsg').style.display = 'block';
                 document.getElementById('packages').style.display = 'block';
+                document.getElementById('paginationNav').style.display = 'none';
                 return; 
             }
             document.getElementById('resultsArea').innerHTML = '';
+            document.getElementById('paginationNav').style.display = 'none';
             document.getElementById('bookmarkArea').style.display = 'none';
             const viewer = document.getElementById('readerView');
             viewer.style.display = 'block';
@@ -511,17 +468,12 @@
                 const searchTerm = document.getElementById('searchInput').value;
                 if(searchTerm) content = highlightText(content, searchTerm);
 
-                // জাজমেন্ট ভিউয়ার (প্রিন্ট ও বুকমার্ক বাটন সহ)
                 viewer.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center mb-4 no-print">
                         <button class="btn btn-light btn-sm border" onclick="location.reload()"><i class="fas fa-arrow-left"></i> Back</button>
                         <div class="d-flex gap-2">
-                            <button class="btn-action btn-outline-warning text-dark border" onclick="toggleBookmark('${item.title}', '${item.citation}', '${item.case_anchor}', '${item.github_filename}')">
-                                <i class="far fa-bookmark"></i> Save
-                            </button>
-                            <button class="btn-action btn-outline-secondary border" onclick="window.print()">
-                                <i class="fas fa-print"></i> Print
-                            </button>
+                            <button class="btn-action btn-outline-warning text-dark border" onclick="toggleBookmark('${item.title}', '${item.citation}', '${item.case_anchor}', '${item.github_filename}')"><i class="far fa-bookmark"></i> Save</button>
+                            <button class="btn-action btn-outline-secondary border" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
                         </div>
                     </div>
                     <h4 class="text-center fw-bold" style="color:#1a237e">${item.title}</h4>
@@ -531,48 +483,11 @@
             } catch (e) { viewer.innerHTML = "Error loading judgment."; }
         }
 
-        // বুকমার্ক লজিক
         async function toggleBookmark(title, citation, anchor, file) {
             if(!currentUser) { alert("Please Login to bookmark."); return; }
-            const { data, error } = await _supabase.from('bookmarks').insert([
-                { email: currentUser.email, case_title: title, case_citation: citation, case_anchor: anchor, github_filename: file }
-            ]);
-            if(error) alert("Already saved or error!");
-            else alert("Bookmark Saved!");
-        }
-
-        async function showMyBookmarks() {
-            if(!currentUser) { openLoginModal(); return; }
-            
-            document.getElementById('homeSection').style.padding = "20px 0";
-            document.getElementById('featuresSection').style.display = 'none';
-            document.getElementById('packages').style.display = 'none';
-            document.getElementById('resultsArea').innerHTML = "";
-            document.getElementById('readerView').style.display = "none";
-            const bmArea = document.getElementById('bookmarkArea');
-            bmArea.style.display = 'block';
-            
-            const list = document.getElementById('bookmarkList');
-            list.innerHTML = '<div class="text-center"><div class="spinner-border"></div></div>';
-
-            const { data, error } = await _supabase.from('bookmarks').select('*').eq('email', currentUser.email);
-            
-            if(!data || data.length === 0) {
-                list.innerHTML = '<div class="alert alert-secondary">No bookmarks found.</div>';
-                return;
-            }
-
-            list.innerHTML = "";
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'result-card';
-                div.onclick = () => loadJudgment({title: item.case_title, citation: item.case_citation, case_anchor: item.case_anchor, github_filename: item.github_filename, is_premium: true});
-                div.innerHTML = `<h6>${item.case_title}</h6><span class="badge bg-secondary">${item.case_citation}</span>`;
-                list.appendChild(div);
-            });
+            const { data, error } = await _supabase.from('bookmarks').insert([{ email: currentUser.email, case_title: title, case_citation: citation, case_anchor: anchor, github_filename: file }]);
+            if(error) alert("Already saved or error!"); else alert("Bookmark Saved!");
         }
     </script>
 </body>
-
 </html>
-
