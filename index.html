@@ -13,7 +13,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
         
         :root {
-            --primary-grad: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); /* আগের নীল ব্যাকগ্রাউন্ড */
+            --primary-grad: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             --accent-color: #d35400;
             --text-dark: #2c3e50;
         }
@@ -26,7 +26,7 @@
         .navbar-brand span { color: var(--accent-color); }
         .nav-link { font-weight: 600; color: #555; margin: 0 10px; font-size: 16px; }
 
-        /* হিরো সেকশন (আগের কালার) */
+        /* হিরো সেকশন */
         .hero-section { 
             background: var(--primary-grad); 
             padding: 60px 15px 80px 15px; 
@@ -36,18 +36,18 @@
         .hero-title { font-size: 38px; font-weight: 700; margin-bottom: 10px; }
         .hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 30px; }
 
-        /* --- ফিক্সড সার্চ বার (মোবাইল ও পিসির জন্য পারফেক্ট) --- */
+        /* --- ফিক্সড সার্চ বার (ডিম্বাকৃতি ফিক্সড) --- */
         .search-container { max-width: 750px; margin: 0 auto; position: relative; }
         
         .search-wrapper {
             background: #fff;
-            border-radius: 50px; /* ক্যাপসুল শেপ */
-            padding: 5px 5px 5px 25px; /* ইনপুটের বামে জায়গা */
-            display: flex; /* ফ্লেক্সবক্স ব্যবহারের কারণে ভাঙবে না */
+            border-radius: 50px;
+            padding: 5px 5px 5px 25px;
+            display: flex;
             align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             transition: 0.3s;
-            height: 60px; /* ফিক্সড হাইট */
+            height: 60px;
         }
         
         .search-input { 
@@ -55,19 +55,17 @@
             background: transparent; height: 100%;
         }
 
-        /* ফিল্টার বাটন */
         .btn-filter {
             background: none; border: none; color: #777; font-size: 20px;
             padding: 0 15px; border-left: 1px solid #eee; height: 30px;
             display: flex; align-items: center;
         }
 
-        /* সার্চ বাটন (পারফেক্ট গোল) */
         .btn-search { 
             background: var(--accent-color); color: white; border: none;
-            width: 48px; height: 48px; border-radius: 50%; /* পারফেক্ট গোল */
+            width: 48px; height: 48px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px; flex-shrink: 0; /* চ্যাপ্টা হবে না */
+            font-size: 18px; flex-shrink: 0;
             box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
         }
         .btn-search:active { transform: scale(0.95); }
@@ -79,7 +77,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* ফিচার কার্ড (মোবাইল গ্রিড) */
+        /* ফিচার কার্ড */
         .features-section { padding: 40px 15px; background: #fff; margin-top: -30px; border-radius: 20px; position: relative; z-index: 10; max-width: 1000px; margin-left: auto; margin-right: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         .feature-icon { font-size: 28px; color: var(--accent-color); margin-bottom: 10px; }
 
@@ -91,7 +89,7 @@
         }
         .headnote-text { 
             text-align: justify; font-size: 15px; line-height: 1.6; color: #444; margin-top: 10px; 
-            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; /* মোবাইলে বেশি বড় টেক্সট লুকাবে */
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
         }
         .highlight { background-color: #ffeb3b; padding: 0 2px; border-radius: 3px; }
 
@@ -114,15 +112,20 @@
         /* ফ্লোটিং বাটন */
         .whatsapp-float { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; line-height: 55px; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; }
 
-        /* মোবাইল রেসপনসিভ এডজাস্টমেন্ট */
+        /* ফরম ডিজাইন (আপনার পছন্দের আগের স্টাইল) */
+        .modal-header { background: #2c3e50; color: white; }
+        .form-label { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+        .form-control, .form-select { border-radius: 5px; padding: 10px; }
+
+        /* মোবাইল রেসপনসিভ */
         @media (max-width: 768px) {
             .hero-title { font-size: 28px; }
             .hero-section { padding-bottom: 60px; }
             .search-input { font-size: 16px; padding-left: 15px; }
-            .search-wrapper { height: 55px; } /* মোবাইলে একটু ছোট */
+            .search-wrapper { height: 55px; }
             .btn-search { width: 45px; height: 45px; }
             .features-section { margin-top: -40px; width: 95%; }
-            .col-6 { padding: 5px; } /* মোবাইলে কলামের গ্যাপ কমানো */
+            .col-6 { padding: 5px; }
         }
     </style>
 </head>
@@ -153,14 +156,8 @@
             <div class="search-container">
                 <div class="search-wrapper">
                     <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder)...">
-                    
-                    <button class="btn-filter" onclick="toggleAdvSearch()" title="Advanced Filter">
-                        <i class="fas fa-sliders-h"></i>
-                    </button>
-                    
-                    <button class="btn-search" onclick="performSearch('simple')">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <button class="btn-filter" onclick="toggleAdvSearch()" title="Advanced Filter"><i class="fas fa-sliders-h"></i></button>
+                    <button class="btn-search" onclick="performSearch('simple')"><i class="fas fa-search"></i></button>
                 </div>
 
                 <div class="adv-search-panel" id="advSearchForm">
@@ -193,30 +190,16 @@
 
     <div class="features-section">
         <div class="row text-center g-3">
-            <div class="col-6 col-md-3">
-                <i class="fas fa-bolt feature-icon"></i>
-                <h6 class="fw-bold">দ্রুত সার্চ</h6>
-            </div>
-            <div class="col-6 col-md-3">
-                <i class="fas fa-database feature-icon"></i>
-                <h6 class="fw-bold">বিশাল আর্কাইভ</h6>
-            </div>
-            <div class="col-6 col-md-3">
-                <i class="fas fa-mobile-alt feature-icon"></i>
-                <h6 class="fw-bold">মোবাইল ফ্রেন্ডলি</h6>
-            </div>
-            <div class="col-6 col-md-3">
-                <i class="fas fa-headset feature-icon"></i>
-                <h6 class="fw-bold">২৪/৭ সাপোর্ট</h6>
-            </div>
+            <div class="col-6 col-md-3"><i class="fas fa-bolt feature-icon"></i><h6 class="fw-bold">দ্রুত সার্চ</h6></div>
+            <div class="col-6 col-md-3"><i class="fas fa-database feature-icon"></i><h6 class="fw-bold">বিশাল আর্কাইভ</h6></div>
+            <div class="col-6 col-md-3"><i class="fas fa-mobile-alt feature-icon"></i><h6 class="fw-bold">মোবাইল ফ্রেন্ডলি</h6></div>
+            <div class="col-6 col-md-3"><i class="fas fa-headset feature-icon"></i><h6 class="fw-bold">২৪/৭ সাপোর্ট</h6></div>
         </div>
     </div>
 
     <div class="container mt-4">
         <div id="resultsArea"></div>
-        
         <div id="readerView" class="p-4 bg-white rounded shadow-sm" style="display:none; margin-bottom:50px;"></div>
-        
         <div id="paywallMsg" class="text-center py-5 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px;">
             <i class="fas fa-crown fa-3x text-warning mb-3"></i>
             <h3>Premium Access Required</h3>
@@ -288,20 +271,48 @@
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">পেমেন্ট ভেরিফিকেশন ফরম</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> পেমেন্ট ভেরিফিকেশন ফরম</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <form action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
+                    <form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
                         <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_subject" value="New Payment Request">
-                        <div class="mb-2"><label class="small fw-bold">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div>
-                        <div class="mb-2"><label class="small fw-bold">মোবাইল নম্বর</label><input type="text" name="Phone" class="form-control" required></div>
-                        <div class="mb-2"><label class="small fw-bold">লগইন ইমেইল</label><input type="email" name="Email" class="form-control" required></div>
-                        <div class="mb-2"><label class="small fw-bold">TrxID</label><input type="text" name="TrxID" class="form-control" required></div>
-                        <div class="mb-3"><label class="small fw-bold">প্যাকেজ</label><select name="Package" class="form-select"><option>Monthly</option><option>Quarterly</option><option>Yearly</option></select></div>
-                        <button type="submit" class="btn btn-success w-100 fw-bold">সাবমিট করুন</button>
+                        <input type="hidden" name="_subject" value="New Payment Request - CaseReference">
+                        <input type="hidden" name="_template" value="table">
+
+                        <div class="mb-3">
+                            <label class="form-label">আপনার নাম</label>
+                            <input type="text" name="Name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর</label>
+                            <input type="text" name="Phone" class="form-control" placeholder="017XXXXXXXX" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">লগইন ইমেইল (যেটা দিয়ে একাউন্ট খুলবেন)</label>
+                            <input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Transaction ID (TrxID)</label>
+                                <input type="text" name="TrxID" class="form-control" placeholder="TXN123456" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">প্যাকেজ</label>
+                                <select name="Package" class="form-select" required>
+                                    <option value="Monthly (199)">মাসিক (১৯৯৳)</option>
+                                    <option value="Quarterly (499)">ত্রৈমাসিক (৪৯৯৳)</option>
+                                    <option value="Half-Yearly (700)">ষান্মাসিক (৭০০৳)</option>
+                                    <option value="Yearly (1200)">বার্ষিক (১২০০৳)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg">সাবমিট করুন</button>
+                        </div>
+                        <p class="text-muted small text-center mt-2">তথ্যগুলো আমাদের ইমেইলে পাঠানো হবে।</p>
                     </form>
                 </div>
             </div>
