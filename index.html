@@ -3,240 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaseReference | Legal Research</title>
+    <title>CaseReference | Legal Research Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        body { background-color: #f9f9f9; font-family: 'Segoe UI', sans-serif; color: #333; }
-        
-        /* ন্যাভিগেশন বার */
-        .navbar { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 15px 0; }
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
         .brand { font-size: 24px; font-weight: bold; color: #2c3e50; text-decoration: none; }
-        .brand span { color: #e67e22; }
+        .brand span { color: #d35400; }
+        
+        /* ড্যাশবোর্ড বাটন */
+        .profile-btn { background: #eef2f7; color: #2c3e50; font-weight: 600; border: none; padding: 8px 20px; border-radius: 30px; transition: 0.3s; }
+        .profile-btn:hover { background: #d35400; color: white; }
 
-        /* সার্চ সেকশন (CaseMine লুক) */
-        .search-hero { text-align: center; padding: 80px 20px; background: #fff; }
-        .search-box { 
-            max-width: 700px; margin: 20px auto; position: relative; 
-            border: 1px solid #dfe1e5; border-radius: 24px; 
-            box-shadow: 0 1px 6px rgba(32,33,36,0.1); 
-            transition: 0.3s;
-        }
-        .search-box:hover { box-shadow: 0 1px 10px rgba(32,33,36,0.2); }
-        .search-input { 
-            width: 100%; border: none; height: 48px; 
-            border-radius: 24px; padding: 0 50px 0 20px; outline: none; font-size: 16px; 
-        }
-        .search-btn { 
-            position: absolute; right: 10px; top: 5px; 
-            background: none; border: none; color: #e67e22; font-size: 20px; cursor: pointer;
-        }
+        /* সার্চ সেকশন */
+        .search-hero { background: white; padding: 60px 20px; text-align: center; margin-bottom: 30px; }
+        .search-box { max-width: 700px; margin: 0 auto; position: relative; }
+        .search-input { width: 100%; height: 50px; border-radius: 25px; border: 1px solid #ddd; padding: 0 50px 0 25px; font-size: 16px; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .search-btn { position: absolute; right: 5px; top: 3px; border: none; background: #d35400; color: white; height: 44px; width: 44px; border-radius: 50%; cursor: pointer; }
 
         /* রেজাল্ট কার্ড */
-        .result-item { 
-            background: #fff; padding: 20px; margin-bottom: 15px; border-radius: 8px; 
-            border-left: 4px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; 
-        }
-        .result-item:hover { border-left: 4px solid #e67e22; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .case-header { color: #1a0dab; font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-        .meta-info { font-size: 13px; color: #5f6368; margin-bottom: 10px; }
-        .meta-info span { margin-right: 15px; }
-        .snippet { font-size: 14px; color: #4d5156; line-height: 1.5; }
+        .result-item { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
+        .result-item:hover { border-left: 4px solid #d35400; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .premium-tag { color: #d35400; font-size: 12px; font-weight: bold; float: right; }
 
-        /* রিডিং মোড (জাজমেন্ট পড়ার পেজ) */
-        #readerView { display: none; background: #fff; padding: 40px; border-radius: 8px; margin-top: 20px; }
-        .judgment-text { font-family: 'Times New Roman', serif; font-size: 18px; line-height: 1.8; white-space: pre-wrap; text-align: justify; }
-        .locked-msg { background: #fff3cd; color: #856404; padding: 20px; text-align: center; border: 1px solid #ffeeba; border-radius: 5px; }
+        /* পেমেন্ট এবং ব্লক মেসেজ */
+        .pay-wall { display: none; background: white; padding: 40px; text-align: center; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .pay-wall h3 { color: #d35400; }
+        .bkash-box { background: #e2136e; color: white; padding: 15px; border-radius: 8px; display: inline-block; margin: 15px 0; font-weight: bold; font-size: 18px; }
+
+        /* রিডার */
+        #readerView { display: none; background: white; padding: 40px; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 1.8; text-align: justify; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="container d-flex justify-content-between">
+        <div class="container d-flex justify-content-between align-items-center">
             <a href="#" class="brand" onclick="location.reload()"><span>Case</span>Reference</a>
             <div id="authDiv">
-                <button class="btn btn-outline-dark btn-sm rounded-pill px-3" onclick="login()">Login</button>
+                <button class="btn btn-dark rounded-pill px-4" onclick="login()">Member Login</button>
             </div>
         </div>
     </nav>
 
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">My Subscription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center" id="profileBody">
+                    Loading status...
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="homeSection" class="search-hero">
-        <h2>আইনি নজির খুঁজুন সহজেই</h2>
-        <p class="text-muted">হাজার হাজার জাজমেন্ট এবং কেস নোটস এর আর্কাইভ</p>
+        <h2>Legal Research Database</h2>
+        <p class="text-muted">Search 75 DLR, High Court & Appellate Division Judgments</p>
         <div class="search-box">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by Citation (e.g., 75 DLR 45) or Party Name...">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by Citation (e.g. 75 DLR) or Keyword...">
             <button class="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
         </div>
     </div>
 
-    <div class="container mb-5">
+    <div class="container pb-5">
         <div id="resultsArea"></div>
+        
+        <div id="paymentMessage" class="pay-wall">
+            <i class="fas fa-lock fa-3x text-secondary mb-3"></i>
+            <h3>Access Denied / মেয়াদ নেই</h3>
+            <p>এই জাজমেন্টটি পড়ার জন্য আপনার অ্যাকটিভ মেম্বারশিপ প্রয়োজন।</p>
+            <div class="alert alert-warning">
+                আপনার বর্তমান প্ল্যানের মেয়াদ শেষ অথবা আপনি এখনো সাবস্ক্রাইব করেননি।
+            </div>
+            <p>আনলিমিটেড অ্যাকসেস পেতে ৫০০ টাকা সেন্ড মানি করুন:</p>
+            <div class="bkash-box"><i class="fas fa-mobile-alt"></i> bKash: 017XXXXXXXX</div>
+            <p class="small text-muted">টাকা পাঠানোর পর আপনার ইমেইল সহ আমাদের হোয়াটসঅ্যাপ করুন। আমরা ১০ মিনিটের মধ্যে অ্যাকসেস চালু করে দেব।</p>
+        </div>
+
         <div id="readerView"></div>
     </div>
 
-   <script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
         // ============================================
-        // ঠিক করা কনফিগারেশন (Variable Name Fixed)
+        // CONFIGURATION
         // ============================================
         const supabaseUrl = 'https://bxzrydybnnlzrgzdqnob.supabase.co'; 
-        
-        // আপনার দেওয়া সঠিক anon key টি এখানে বসানো হলো
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4enJ5ZHlibm5senJnemRxbm9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTQ2MzksImV4cCI6MjA4NDEzMDYzOX0.6Ikj5At5UKhKZr6y_lhmOQ-FUDxdnJOS1ZUSf6dTgEI'; 
-        
         const githubUser = 'LexSwordBD'; 
         const repoName = 'casereference'; 
+        const siteLink = 'https://lexswordbd.github.io/casereference/'; // আপনার লাইভ সাইটের লিংক
         // ============================================
 
-        // ফিক্স: ভেরিয়েবল নাম supabase এর বদলে _supabase করা হলো যাতে কনফ্লিক্ট না হয়
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
+        let subscriptionStatus = null; // এখানে আমরা মেয়াদ সেভ রাখব
 
-        // ইউজার চেক
-        async function checkAuth() {
-            // ফিক্স: _supabase ব্যবহার করা হচ্ছে
+        // ১. সিস্টেম চালু হলে ইউজার এবং তার মেয়াদ চেক করা
+        async function initAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
+            
             if (session) {
                 currentUser = session.user;
-                document.getElementById('authDiv').innerHTML = `
-                    <span class="small me-2">${currentUser.email}</span>
-                    <button class="btn btn-danger btn-sm rounded-pill" onclick="logout()">Logout</button>
-                `;
+                // মেম্বারশিপ চেক করা
+                await checkSubscription(currentUser.email);
+            } else {
+                renderAuthButton(false);
             }
         }
-        checkAuth();
+        initAuth();
 
-       async function login() {
-            const email = prompt("আপনার ইমেইল দিন (Login Link যাবে):");
-            if(email) {
-                // আমরা এখানে সুপাবেজকে কড়া নির্দেশ দিচ্ছি লগইন শেষে কোথায় ফিরতে হবে
-                const { error } = await _supabase.auth.signInWithOtp({ 
-                    email: email,
-                    options: {
-                        // এই লিংকটি আপনার ব্রাউজারের লিংকের সাথে হুবহু এক হতে হবে
-                        emailRedirectTo: 'https://lexswordbd.github.io/casereference/'
-                    }
-                });
-                
-                if(error) alert("Error: " + error.message);
-                else alert("আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। চেক করুন!");
+        // ২. সুপাবেজ থেকে মেয়াদ চেক করার ফাংশন
+        async function checkSubscription(email) {
+            const { data, error } = await _supabase
+                .from('members')
+                .select('*')
+                .eq('email', email)
+                .single();
+
+            const today = new Date();
+            let isValid = false;
+            let expiryDate = "No Active Plan";
+
+            if (data && data.expiry_date) {
+                const exp = new Date(data.expiry_date);
+                if (exp >= today) {
+                    isValid = true;
+                    expiryDate = exp.toDateString();
+                } else {
+                    expiryDate = "Expired on " + exp.toDateString();
+                }
+            }
+
+            subscriptionStatus = { valid: isValid, date: expiryDate, plan: data ? data.plan_name : 'Free User' };
+            renderAuthButton(true);
+        }
+
+        // ৩. লগইন/প্রোফাইল বাটন দেখানো
+        function renderAuthButton(isLoggedIn) {
+            const div = document.getElementById('authDiv');
+            if (isLoggedIn) {
+                let badgeColor = subscriptionStatus.valid ? 'bg-success' : 'bg-danger';
+                div.innerHTML = `
+                    <button class="profile-btn" data-bs-toggle="modal" data-bs-target="#profileModal">
+                        <i class="fas fa-user-circle"></i> My Account
+                        <span class="badge ${badgeColor} ms-2" style="font-size:10px;">${subscriptionStatus.valid ? 'Active' : 'Expired'}</span>
+                    </button>
+                `;
+                // মডেল আপডেট
+                document.getElementById('profileBody').innerHTML = `
+                    <p class="fw-bold">${currentUser.email}</p>
+                    <hr>
+                    <p>Status: <span class="badge ${badgeColor}">${subscriptionStatus.valid ? 'Active' : 'Expired'}</span></p>
+                    <p>Plan: ${subscriptionStatus.plan}</p>
+                    <p>Expiry: <strong>${subscriptionStatus.date}</strong></p>
+                    ${!subscriptionStatus.valid ? '<p class="text-danger small">দয়া করে দ্রুত রিনিউ করুন</p>' : ''}
+                `;
+            } else {
+                div.innerHTML = `<button class="btn btn-dark rounded-pill px-4" onclick="login()">Member Login</button>`;
             }
         }
+
+        // ৪. লগইন ফাংশন
+        async function login() {
+            const email = prompt("Enter your email:");
+            if(email) {
+                const { error } = await _supabase.auth.signInWithOtp({ 
+                    email, 
+                    options: { emailRedirectTo: siteLink }
+                });
+                if(error) alert(error.message);
+                else alert("Check your email for the login link!");
+            }
+        }
+
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
-        // সার্চ ফাংশন
+        // ৫. সার্চ এবং রেজাল্ট
         async function performSearch() {
             const query = document.getElementById('searchInput').value;
-            if(!query) {
-                alert("দয়া করে সার্চ বক্সে কিছু লিখুন!");
-                return;
-            }
+            if(!query) return;
 
-            // ডিজাইন পরিবর্তন
-            document.getElementById('homeSection').style.padding = "30px 0";
-            document.getElementById('homeSection').style.background = "#f8f9fa";
+            document.getElementById('homeSection').style.padding = "20px 0";
             document.getElementById('readerView').style.display = 'none';
-
+            document.getElementById('paymentMessage').style.display = 'none';
+            
             const resultsDiv = document.getElementById('resultsArea');
-            resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-warning">Loading...</div></div>';
+            resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-warning"></div></div>';
 
-            console.log("Searching for:", query); // ডিবাগিং এর জন্য
-
-            // ডাটাবেস খোঁজা (ফিক্স: _supabase ব্যবহার করা হচ্ছে)
             const { data, error } = await _supabase
                 .from('cases')
                 .select('*')
-                .or(`title.ilike.%${query}%,citation.ilike.%${query}%,headnote.ilike.%${query}%`)
+                .or(`title.ilike.%${query}%,citation.ilike.%${query}%`)
                 .limit(20);
 
-            if (error) {
-                console.error("Supabase Error:", error); // কনসোলে এরর দেখাবে
-                resultsDiv.innerHTML = `<div class="alert alert-danger text-center mt-4">Database Error: ${error.message}</div>`;
-                return;
-            }
-
             if (!data || data.length === 0) {
-                resultsDiv.innerHTML = '<div class="alert alert-light text-center mt-4">No cases found. Try searching "75 DLR".</div>';
+                resultsDiv.innerHTML = '<div class="text-center mt-4 text-muted">No results found.</div>';
                 return;
             }
 
-            // রেজাল্ট দেখানো
-            resultsDiv.innerHTML = `<p class="text-muted mt-3 mb-2">Found ${data.length} results</p>`;
-            
+            resultsDiv.innerHTML = `<p class="text-muted mt-3">Found ${data.length} results</p>`;
             data.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'result-item';
                 div.onclick = () => loadJudgment(item);
                 div.innerHTML = `
-                    <div class="case-header">${item.title}</div>
-                    <div class="meta-info">
-                        <span><i class="fas fa-gavel"></i> ${item.court || 'Court'}</span>
-                        <span><i class="fas fa-calendar"></i> ${item.year || 'Year'}</span>
-                        <span class="badge bg-secondary text-light">${item.citation || 'Unreported'}</span>
-                        ${item.is_premium ? '<span class="text-danger ms-2"><i class="fas fa-lock"></i> Premium</span>' : ''}
+                    <div class="premium-tag">${item.is_premium ? '<i class="fas fa-crown"></i> Premium' : 'Free'}</div>
+                    <h5 style="color:#1a0dab">${item.title}</h5>
+                    <div class="text-muted small">
+                        <span class="me-3"><i class="fas fa-gavel"></i> ${item.court || 'Court'}</span>
+                        <span><i class="fas fa-book"></i> ${item.citation}</span>
                     </div>
-                    <div class="snippet">${item.headnote ? item.headnote.substring(0, 200) : ''}...</div>
+                    <p class="small text-muted mt-2">${item.headnote ? item.headnote.substring(0, 150) : ''}...</p>
                 `;
                 resultsDiv.appendChild(div);
             });
         }
 
-        // জাজমেন্ট লোড করার ফাংশন
+        // ৬. জাজমেন্ট লোড করার আগে "মেয়াদ" চেক করা
         async function loadJudgment(item) {
-            if(item.is_premium && !currentUser) {
-                alert("🔒 This case is Premium. Please Login to read full text.");
+            const reader = document.getElementById('readerView');
+            const paywall = document.getElementById('paymentMessage');
+            document.getElementById('resultsArea').innerHTML = '';
+
+            // শর্ত ১: প্রিমিয়াম কেস কিন্তু লগইন নেই
+            if (item.is_premium && !currentUser) {
+                alert("Please Login first!");
                 login();
                 return;
             }
 
-            document.getElementById('resultsArea').innerHTML = '';
-            const viewer = document.getElementById('readerView');
-            viewer.style.display = 'block';
-            viewer.innerHTML = '<div class="text-center">Fetching from Archive...</div>';
+            // শর্ত ২: প্রিমিয়াম কেস, লগইন আছে, কিন্তু মেয়াদ নেই (Subscription Check)
+            if (item.is_premium && (!subscriptionStatus || !subscriptionStatus.valid)) {
+                reader.style.display = 'none';
+                paywall.style.display = 'block'; // টাকা চাওয়ার মেসেজ দেখাও
+                return;
+            }
 
-            const url = `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/judgments/${item.github_filename}`;
-            console.log("Fetching URL:", url);
+            // সব ঠিক থাকলে জাজমেন্ট দেখাও
+            paywall.style.display = 'none';
+            reader.style.display = 'block';
+            reader.innerHTML = 'Loading content...';
 
+            // গিটহাব থেকে টেক্সট আনা
             try {
+                const url = `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/judgments/${item.github_filename}`;
                 const response = await fetch(url);
-                if (!response.ok) throw new Error("GitHub file not found (404)");
-                const fullText = await response.text();
-
-                // মার্কার লজিক
-                const startMarker = `===${item.case_anchor}===`;
-                const endMarker = `===End===`;
-
-                const sIndex = fullText.indexOf(startMarker);
-                let content = "Judgment content marker not found in file. Please check 'case_anchor' in database.";
-
-                if (sIndex !== -1) {
-                    const eIndex = fullText.indexOf(endMarker, sIndex);
-                    if (eIndex !== -1) {
-                        content = fullText.substring(sIndex + startMarker.length, eIndex);
-                    }
+                const text = await response.text();
+                
+                const start = `===${item.case_anchor}===`;
+                const end = `===End===`;
+                const sIdx = text.indexOf(start);
+                
+                let content = "Content not found.";
+                if(sIdx !== -1) {
+                    const eIdx = text.indexOf(end, sIdx);
+                    if(eIdx !== -1) content = text.substring(sIdx + start.length, eIdx);
                 }
 
-                viewer.innerHTML = `
-                    <button class="btn btn-sm btn-outline-secondary mb-3" onclick="performSearch()">Back to Results</button>
-                    <h2 class="text-center mb-2">${item.title}</h2>
-                    <p class="text-center text-muted fw-bold">${item.citation}</p>
+                reader.innerHTML = `
+                    <button class="btn btn-sm btn-light border mb-3" onclick="performSearch()">Back</button>
+                    <h2 class="text-center">${item.title}</h2>
+                    <p class="text-center fw-bold">${item.citation}</p>
                     <hr>
-                    <div class="judgment-text">${content}</div>
-                    <hr>
-                    <div class="text-center mt-4">
-                        <button class="btn btn-warning" onclick="window.print()">Print Case</button>
-                    </div>
+                    ${content}
                 `;
-
             } catch (err) {
-                console.error(err);
-                viewer.innerHTML = `<div class="alert alert-danger">Error loading file: ${err.message}</div>`;
+                reader.innerHTML = "Error loading content.";
             }
         }
     </script>
 </body>
-
 </html>
-
-
