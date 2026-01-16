@@ -3,94 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaseReference | Legal Research Platform</title>
+    <title>CaseReference | Advanced Legal Search</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
-        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        
+        /* ব্র্যান্ডিং */
+        .navbar { background: #fff; border-bottom: 1px solid #ddd; padding: 15px 0; }
         .brand { font-size: 24px; font-weight: bold; color: #2c3e50; text-decoration: none; }
         .brand span { color: #d35400; }
-        
-        /* ড্যাশবোর্ড বাটন */
-        .profile-btn { background: #eef2f7; color: #2c3e50; font-weight: 600; border: none; padding: 8px 20px; border-radius: 30px; transition: 0.3s; }
-        .profile-btn:hover { background: #d35400; color: white; }
 
         /* সার্চ সেকশন */
-        .search-hero { background: white; padding: 60px 20px; text-align: center; margin-bottom: 30px; }
-        .search-box { max-width: 700px; margin: 0 auto; position: relative; }
-        .search-input { width: 100%; height: 50px; border-radius: 25px; border: 1px solid #ddd; padding: 0 50px 0 25px; font-size: 16px; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .search-btn { position: absolute; right: 5px; top: 3px; border: none; background: #d35400; color: white; height: 44px; width: 44px; border-radius: 50%; cursor: pointer; }
+        .search-area { background: white; padding: 40px 20px; border-bottom: 1px solid #eee; }
+        .search-container { max-width: 800px; margin: 0 auto; }
+        
+        .main-search-box { position: relative; }
+        .search-input { 
+            width: 100%; height: 55px; border-radius: 8px; border: 2px solid #e9ecef; 
+            padding: 0 120px 0 20px; font-size: 18px; outline: none; transition: 0.3s;
+        }
+        .search-input:focus { border-color: #d35400; box-shadow: 0 0 10px rgba(211, 84, 0, 0.1); }
+        
+        .action-btns { position: absolute; right: 10px; top: 8px; }
+        
+        /* এডভান্সড সার্চ বক্স (লুকানো) */
+        .adv-search-panel { 
+            display: none; background: #f8f9fa; border: 1px solid #ddd; 
+            padding: 20px; border-radius: 8px; margin-top: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .form-label { font-size: 13px; font-weight: bold; color: #555; }
 
-        /* রেজাল্ট কার্ড */
-        .result-item { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
-        .result-item:hover { border-left: 4px solid #d35400; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .premium-tag { color: #d35400; font-size: 12px; font-weight: bold; float: right; }
+        /* রেজাল্ট ডিজাইন */
+        .result-card { 
+            background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; 
+            border: 1px solid #eee; cursor: pointer; transition: 0.2s; 
+        }
+        .result-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #d35400; }
+        
+        .highlight { background-color: #fff3cd; font-weight: bold; padding: 0 2px; border-radius: 2px; }
+        
+        .citation-tag { background: #2c3e50; color: white; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+        .headnote-text { font-size: 15px; color: #444; line-height: 1.6; margin-top: 10px; }
 
-        /* পেমেন্ট এবং ব্লক মেসেজ */
-        .pay-wall { display: none; background: white; padding: 40px; text-align: center; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .pay-wall h3 { color: #d35400; }
-        .bkash-box { background: #e2136e; color: white; padding: 15px; border-radius: 8px; display: inline-block; margin: 15px 0; font-weight: bold; font-size: 18px; }
-
-        /* রিডার */
-        #readerView { display: none; background: white; padding: 40px; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 18px; line-height: 1.8; text-align: justify; }
+        /* রিডার মোড */
+        #readerView { display: none; background: white; padding: 50px; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 19px; line-height: 1.8; text-align: justify; }
+        .paywall { display: none; text-align: center; padding: 50px; background: white; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="container d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between">
             <a href="#" class="brand" onclick="location.reload()"><span>Case</span>Reference</a>
-            <div id="authDiv">
-                <button class="btn btn-dark rounded-pill px-4" onclick="login()">Member Login</button>
-            </div>
+            <div id="authDiv"></div>
         </div>
     </nav>
 
-    <div class="modal fade" id="profileModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">My Subscription</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="search-area" id="searchSection">
+        <div class="search-container">
+            <div class="main-search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search keywords in Headnotes (e.g. Murder, Fraud, Section 302)...">
+                <div class="action-btns">
+                    <button class="btn btn-outline-secondary" onclick="toggleAdvSearch()" title="Advanced Search"><i class="fas fa-sliders-h"></i></button>
+                    <button class="btn btn-danger" onclick="performSearch('simple')">Search</button>
                 </div>
-                <div class="modal-body text-center" id="profileBody">
-                    Loading status...
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="adv-search-panel" id="advSearchForm">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label class="form-label">Journal</label>
+                        <select id="advJournal" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="DLR">DLR</option>
+                            <option value="BLD">BLD</option>
+                            <option value="ADC">ADC</option>
+                            <option value="ALR">ALR</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Volume</label>
+                        <input type="text" id="advVol" class="form-control" placeholder="e.g. 75">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Division</label>
+                        <select id="advDiv" class="form-select">
+                            <option value="">Any</option>
+                            <option value="AD">Appellate (AD)</option>
+                            <option value="HCD">High Court (HCD)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Page</label>
+                        <input type="text" id="advPage" class="form-control" placeholder="e.g. 45">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-dark w-100" onclick="performSearch('advanced')">Find Case</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="homeSection" class="search-hero">
-        <h2>Legal Research Database</h2>
-        <p class="text-muted">Search 75 DLR, High Court & Appellate Division Judgments</p>
-        <div class="search-box">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by Citation (e.g. 75 DLR) or Keyword...">
-            <button class="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
-        </div>
-    </div>
-
-    <div class="container pb-5">
+    <div class="container mt-4 mb-5">
         <div id="resultsArea"></div>
         
-        <div id="paymentMessage" class="pay-wall">
-            <i class="fas fa-lock fa-3x text-secondary mb-3"></i>
-            <h3>Access Denied / মেয়াদ নেই</h3>
-            <p>এই জাজমেন্টটি পড়ার জন্য আপনার অ্যাকটিভ মেম্বারশিপ প্রয়োজন।</p>
-            <div class="alert alert-warning">
-                আপনার বর্তমান প্ল্যানের মেয়াদ শেষ অথবা আপনি এখনো সাবস্ক্রাইব করেননি।
-            </div>
-            <p>আনলিমিটেড অ্যাকসেস পেতে ৫০০ টাকা সেন্ড মানি করুন:</p>
-            <div class="bkash-box"><i class="fas fa-mobile-alt"></i> bKash: 017XXXXXXXX</div>
-            <p class="small text-muted">টাকা পাঠানোর পর আপনার ইমেইল সহ আমাদের হোয়াটসঅ্যাপ করুন। আমরা ১০ মিনিটের মধ্যে অ্যাকসেস চালু করে দেব।</p>
+        <div id="paywallMsg" class="paywall shadow-sm">
+            <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+            <h3>Premium Content</h3>
+            <p>এই জাজমেন্টটি পড়ার জন্য আপনার মেম্বারশিপ রিনিউ করুন।</p>
         </div>
 
-        <div id="readerView"></div>
+        <div id="readerView" class="shadow-sm"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -99,188 +127,171 @@
         // CONFIGURATION
         // ============================================
         const supabaseUrl = 'https://bxzrydybnnlzrgzdqnob.supabase.co'; 
+        // আপনার Key অপরিবর্তিত আছে
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4enJ5ZHlibm5senJnemRxbm9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTQ2MzksImV4cCI6MjA4NDEzMDYzOX0.6Ikj5At5UKhKZr6y_lhmOQ-FUDxdnJOS1ZUSf6dTgEI'; 
         const githubUser = 'LexSwordBD'; 
         const repoName = 'casereference'; 
-        const siteLink = 'https://lexswordbd.github.io/casereference/'; // আপনার লাইভ সাইটের লিংক
+        const siteLink = 'https://lexswordbd.github.io/casereference/';
         // ============================================
 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
-        let subscriptionStatus = null; // এখানে আমরা মেয়াদ সেভ রাখব
+        let subStatus = false;
 
-        // ১. সিস্টেম চালু হলে ইউজার এবং তার মেয়াদ চেক করা
-        async function initAuth() {
+        // অথেনটিকেশন চেক
+        async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
+            const authDiv = document.getElementById('authDiv');
             
             if (session) {
                 currentUser = session.user;
-                // মেম্বারশিপ চেক করা
-                await checkSubscription(currentUser.email);
+                // মেম্বারশিপ চেক (সিম্পল ভার্সন)
+                const { data } = await _supabase.from('members').select('*').eq('email', currentUser.email).single();
+                if(data && new Date(data.expiry_date) > new Date()) subStatus = true;
+
+                authDiv.innerHTML = `
+                    <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="logout()">
+                        <i class="fas fa-user"></i> ${subStatus ? 'Premium Member' : 'Free User'} | Logout
+                    </button>`;
             } else {
-                renderAuthButton(false);
+                authDiv.innerHTML = `<button class="btn btn-dark rounded-pill" onclick="login()">Login</button>`;
             }
         }
-        initAuth();
+        checkAuth();
 
-        // ২. সুপাবেজ থেকে মেয়াদ চেক করার ফাংশন
-        async function checkSubscription(email) {
-            const { data, error } = await _supabase
-                .from('members')
-                .select('*')
-                .eq('email', email)
-                .single();
-
-            const today = new Date();
-            let isValid = false;
-            let expiryDate = "No Active Plan";
-
-            if (data && data.expiry_date) {
-                const exp = new Date(data.expiry_date);
-                if (exp >= today) {
-                    isValid = true;
-                    expiryDate = exp.toDateString();
-                } else {
-                    expiryDate = "Expired on " + exp.toDateString();
-                }
-            }
-
-            subscriptionStatus = { valid: isValid, date: expiryDate, plan: data ? data.plan_name : 'Free User' };
-            renderAuthButton(true);
-        }
-
-        // ৩. লগইন/প্রোফাইল বাটন দেখানো
-        function renderAuthButton(isLoggedIn) {
-            const div = document.getElementById('authDiv');
-            if (isLoggedIn) {
-                let badgeColor = subscriptionStatus.valid ? 'bg-success' : 'bg-danger';
-                div.innerHTML = `
-                    <button class="profile-btn" data-bs-toggle="modal" data-bs-target="#profileModal">
-                        <i class="fas fa-user-circle"></i> My Account
-                        <span class="badge ${badgeColor} ms-2" style="font-size:10px;">${subscriptionStatus.valid ? 'Active' : 'Expired'}</span>
-                    </button>
-                `;
-                // মডেল আপডেট
-                document.getElementById('profileBody').innerHTML = `
-                    <p class="fw-bold">${currentUser.email}</p>
-                    <hr>
-                    <p>Status: <span class="badge ${badgeColor}">${subscriptionStatus.valid ? 'Active' : 'Expired'}</span></p>
-                    <p>Plan: ${subscriptionStatus.plan}</p>
-                    <p>Expiry: <strong>${subscriptionStatus.date}</strong></p>
-                    ${!subscriptionStatus.valid ? '<p class="text-danger small">দয়া করে দ্রুত রিনিউ করুন</p>' : ''}
-                `;
-            } else {
-                div.innerHTML = `<button class="btn btn-dark rounded-pill px-4" onclick="login()">Member Login</button>`;
-            }
-        }
-
-        // ৪. লগইন ফাংশন
         async function login() {
-            const email = prompt("Enter your email:");
-            if(email) {
-                const { error } = await _supabase.auth.signInWithOtp({ 
-                    email, 
-                    options: { emailRedirectTo: siteLink }
-                });
-                if(error) alert(error.message);
-                else alert("Check your email for the login link!");
-            }
+            const email = prompt("Email:");
+            if(email) await _supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: siteLink } });
         }
-
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
-        // ৫. সার্চ এবং রেজাল্ট
-        async function performSearch() {
-            const query = document.getElementById('searchInput').value;
-            if(!query) return;
+        // ১. এডভান্সড সার্চ টগল
+        function toggleAdvSearch() {
+            const panel = document.getElementById('advSearchForm');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
 
-            document.getElementById('homeSection').style.padding = "20px 0";
-            document.getElementById('readerView').style.display = 'none';
-            document.getElementById('paymentMessage').style.display = 'none';
-            
+        // ২. সার্চ ইঞ্জিন (মেইন লজিক)
+        async function performSearch(type) {
             const resultsDiv = document.getElementById('resultsArea');
-            resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-warning"></div></div>';
+            document.getElementById('readerView').style.display = 'none';
+            document.getElementById('paywallMsg').style.display = 'none';
+            resultsDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-warning"></div></div>';
 
-            const { data, error } = await _supabase
-                .from('cases')
-                .select('*')
-                .or(`title.ilike.%${query}%,citation.ilike.%${query}%`)
-                .limit(20);
+            let queryBuilder = _supabase.from('cases').select('*');
+            let highlightTerm = "";
 
-            if (!data || data.length === 0) {
-                resultsDiv.innerHTML = '<div class="text-center mt-4 text-muted">No results found.</div>';
+            // ক) এডভান্সড সার্চ লজিক
+            if (type === 'advanced') {
+                const jour = document.getElementById('advJournal').value;
+                const vol = document.getElementById('advVol').value;
+                const div = document.getElementById('advDiv').value;
+                const pg = document.getElementById('advPage').value;
+
+                if (!jour && !vol && !pg) { alert("Please fill at least Journal and Page."); return; }
+
+                if(jour) queryBuilder = queryBuilder.eq('journal', jour);
+                if(vol) queryBuilder = queryBuilder.eq('volume', vol);
+                if(div) queryBuilder = queryBuilder.eq('division', div);
+                if(pg) queryBuilder = queryBuilder.eq('page_number', pg);
+                
+                highlightTerm = `${jour} ${vol} ${pg}`;
+            } 
+            // খ) সিম্পল হেডনোট সার্চ লজিক
+            else {
+                const text = document.getElementById('searchInput').value;
+                if (!text) return;
+                
+                // হেডনোট এবং টাইটেল খুঁজবে
+                queryBuilder = queryBuilder.or(`headnote.ilike.%${text}%,title.ilike.%${text}%`);
+                highlightTerm = text;
+            }
+
+            const { data, error } = await queryBuilder.limit(20);
+
+            if (error || !data.length) {
+                resultsDiv.innerHTML = '<div class="text-center mt-4">No records found.</div>';
                 return;
             }
 
-            resultsDiv.innerHTML = `<p class="text-muted mt-3">Found ${data.length} results</p>`;
+            // রেজাল্ট দেখানো
+            resultsDiv.innerHTML = `<p class="text-muted small">Found ${data.length} results</p>`;
+            
             data.forEach(item => {
+                // ৩. হাইলাইটিং ম্যাজিক (Highlight Logic)
+                const safeHeadnote = item.headnote || "No headnote available";
+                const highlightedHeadnote = highlightText(safeHeadnote, highlightTerm);
+
                 const div = document.createElement('div');
-                div.className = 'result-item';
+                div.className = 'result-card';
                 div.onclick = () => loadJudgment(item);
                 div.innerHTML = `
-                    <div class="premium-tag">${item.is_premium ? '<i class="fas fa-crown"></i> Premium' : 'Free'}</div>
-                    <h5 style="color:#1a0dab">${item.title}</h5>
-                    <div class="text-muted small">
-                        <span class="me-3"><i class="fas fa-gavel"></i> ${item.court || 'Court'}</span>
-                        <span><i class="fas fa-book"></i> ${item.citation}</span>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="text-primary mb-1">${item.title}</h5>
+                        ${item.is_premium ? '<small class="text-danger fw-bold"><i class="fas fa-lock"></i> Premium</small>' : '<small class="text-success">Free</small>'}
                     </div>
-                    <p class="small text-muted mt-2">${item.headnote ? item.headnote.substring(0, 150) : ''}...</p>
+                    <div class="mb-2">
+                        <span class="citation-tag">${item.citation}</span>
+                        <span class="text-muted small ms-2"><i class="fas fa-gavel"></i> ${item.division || 'HCD/AD'}</span>
+                        <span class="text-muted small ms-2"><i class="fas fa-calendar"></i> ${item.year || ''}</span>
+                    </div>
+                    <div class="headnote-text">${highlightedHeadnote}</div>
                 `;
                 resultsDiv.appendChild(div);
             });
         }
 
-        // ৬. জাজমেন্ট লোড করার আগে "মেয়াদ" চেক করা
+        // ৪. টেক্সট হাইলাইট করার ফাংশন
+        function highlightText(text, keyword) {
+            if (!keyword) return text;
+            // এটি বড়/ছোট হাতের অক্ষর ইগনোর করে হাইলাইট করবে (Case Insensitive)
+            const regex = new RegExp(`(${keyword})`, "gi");
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // ৫. জাজমেন্ট লোড (রিডার)
         async function loadJudgment(item) {
-            const reader = document.getElementById('readerView');
-            const paywall = document.getElementById('paymentMessage');
+            if (item.is_premium) {
+                if (!currentUser) { login(); return; }
+                if (!subStatus) { 
+                    document.getElementById('resultsArea').innerHTML = '';
+                    document.getElementById('paywallMsg').style.display = 'block';
+                    return; 
+                }
+            }
+
+            const viewer = document.getElementById('readerView');
             document.getElementById('resultsArea').innerHTML = '';
+            viewer.style.display = 'block';
+            viewer.innerHTML = 'Loading judgment...';
 
-            // শর্ত ১: প্রিমিয়াম কেস কিন্তু লগইন নেই
-            if (item.is_premium && !currentUser) {
-                alert("Please Login first!");
-                login();
-                return;
-            }
-
-            // শর্ত ২: প্রিমিয়াম কেস, লগইন আছে, কিন্তু মেয়াদ নেই (Subscription Check)
-            if (item.is_premium && (!subscriptionStatus || !subscriptionStatus.valid)) {
-                reader.style.display = 'none';
-                paywall.style.display = 'block'; // টাকা চাওয়ার মেসেজ দেখাও
-                return;
-            }
-
-            // সব ঠিক থাকলে জাজমেন্ট দেখাও
-            paywall.style.display = 'none';
-            reader.style.display = 'block';
-            reader.innerHTML = 'Loading content...';
-
-            // গিটহাব থেকে টেক্সট আনা
             try {
                 const url = `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/judgments/${item.github_filename}`;
-                const response = await fetch(url);
-                const text = await response.text();
+                const res = await fetch(url);
+                const fullText = await res.text();
                 
                 const start = `===${item.case_anchor}===`;
                 const end = `===End===`;
-                const sIdx = text.indexOf(start);
+                const sIdx = fullText.indexOf(start);
                 
-                let content = "Content not found.";
+                let content = "Error parsing file.";
                 if(sIdx !== -1) {
-                    const eIdx = text.indexOf(end, sIdx);
-                    if(eIdx !== -1) content = text.substring(sIdx + start.length, eIdx);
+                    const eIdx = fullText.indexOf(end, sIdx);
+                    if(eIdx !== -1) content = fullText.substring(sIdx + start.length, eIdx);
                 }
 
-                reader.innerHTML = `
-                    <button class="btn btn-sm btn-light border mb-3" onclick="performSearch()">Back</button>
-                    <h2 class="text-center">${item.title}</h2>
-                    <p class="text-center fw-bold">${item.citation}</p>
+                // হেডনোটে সার্চ করা শব্দটি মূল জাজমেন্টেও হাইলাইট হবে
+                const searchTerm = document.getElementById('searchInput').value;
+                if(searchTerm) content = highlightText(content, searchTerm);
+
+                viewer.innerHTML = `
+                    <button class="btn btn-sm btn-light border mb-3" onclick="location.reload()">Back to Search</button>
+                    <h3 class="text-center">${item.title}</h3>
+                    <p class="text-center fw-bold text-muted">${item.citation}</p>
                     <hr>
                     ${content}
                 `;
-            } catch (err) {
-                reader.innerHTML = "Error loading content.";
-            }
+            } catch (err) { viewer.innerHTML = "Error loading file."; }
         }
     </script>
 </body>
