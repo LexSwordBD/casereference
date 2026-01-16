@@ -54,7 +54,7 @@
         /* এডভান্সড সার্চ প্যানেল */
         .adv-search-panel { display: none; background: #fff; border-radius: 12px; padding: 20px; margin-top: 15px; text-align: left; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* ফিচার সেকশন (ফিক্সড) */
+        /* ফিচার সেকশন (ওভারল্যাপ ফিক্সড) */
         .features-section { 
             padding: 40px 15px; background: #fff; 
             margin-top: -40px; /* পিসিতে উপরে থাকবে */
@@ -65,7 +65,11 @@
         .feature-icon { font-size: 28px; color: var(--accent-color); margin-bottom: 10px; }
 
         /* রেজাল্ট কার্ড */
-        .result-card { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
+        .result-card { 
+            background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; 
+            border-left: 5px solid var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            cursor: pointer;
+        }
         .headnote-text { 
             text-align: justify; font-size: 15px; line-height: 1.7; color: #2c3e50; margin-top: 15px;
             white-space: pre-wrap; font-family: 'Times New Roman', serif;
@@ -88,11 +92,11 @@
         /* মোবাইল রেসপনসিভ ফিক্স */
         @media (max-width: 768px) {
             .hero-title { font-size: 28px; }
-            .hero-section { padding-bottom: 40px; } /* নিচে প্যাডিং কমানো হলো */
+            .hero-section { padding-bottom: 40px; }
             
-            /* এখানে ফিচার সেকশন ফিক্স করা হয়েছে */
+            /* ফিচার সেকশন ফিক্স: মোবাইলে সার্চ বারের নিচে থাকবে */
             .features-section { 
-                margin-top: 20px !important; /* মোবাইলে আর সার্চ বারের উপরে উঠবে না */
+                margin-top: 20px !important; 
                 width: 95%; 
             }
             
@@ -147,7 +151,7 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <label class="small fw-bold text-muted">Division</label>
-                            <select id="advDiv" class="form-select form-select-sm"><option value="">Any</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
+                            <select id="advDiv" class="form-select form-select-sm"><option value="">Select</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
                         </div>
                         <div class="col-6 col-md-2">
                             <label class="small fw-bold text-muted">Page</label>
@@ -340,19 +344,14 @@
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
         function toggleAdvSearch() { document.getElementById('advSearchForm').style.display = document.getElementById('advSearchForm').style.display === 'block' ? 'none' : 'block'; }
         
-        // ১. মেনু বন্ধ করা এবং হোম রিসেট করার ফাংশন
-        function resetHome() {
-            location.reload(); // পেজ রিলোড দিলে সব রিসেট হবে
-        }
+        function resetHome() { location.reload(); }
 
-        // ২. মোবাইল মেনু লিংকে ক্লিক করলে মেনু বন্ধ করার লজিক
+        // মোবাইল মেনু অটো ক্লোজ
         document.querySelectorAll('.nav-link-close').forEach(item => {
             item.addEventListener('click', () => {
-                const navbarToggler = document.querySelector('.navbar-toggler');
-                const navbarCollapse = document.querySelector('.navbar-collapse');
-                if (window.getComputedStyle(navbarToggler).display !== 'none' && navbarCollapse.classList.contains('show')) {
-                    navbarToggler.click(); // মেনু বন্ধ করার জন্য টগল বাটনে ক্লিক করা হবে
-                }
+                const toggler = document.querySelector('.navbar-toggler');
+                const collapse = document.querySelector('.navbar-collapse');
+                if (window.getComputedStyle(toggler).display !== 'none' && collapse.classList.contains('show')) toggler.click();
             });
         });
 
@@ -383,14 +382,23 @@
             if (type === 'advanced') {
                 const jour = document.getElementById('advJournal').value;
                 const vol = document.getElementById('advVol').value;
+                const div = document.getElementById('advDiv').value;
                 const pg = document.getElementById('advPage').value;
-                if (!jour || !vol || !pg) { 
-                    alert("Advanced Search-এর জন্য সব ঘর পূরণ করা বাধ্যতামূলক।");
+                
+                if (!jour || !vol || !div || !pg) { 
+                    alert("Advanced Search-এর জন্য সব ঘর (Journal, Vol, Division, Page) পূরণ করা বাধ্যতামূলক।");
                     resultsDiv.innerHTML = "";
-                    document.getElementById('featuresSection').style.display = 'block'; 
+                    document.getElementById('featuresSection').style.display = 'block';
                     return; 
                 }
-                queryBuilder = queryBuilder.eq('journal', jour).eq('volume', vol).eq('page_number', pg);
+                
+                // EXACT MATCH LOGIC ADDED HERE
+                queryBuilder = queryBuilder
+                    .eq('journal', jour)
+                    .eq('volume', vol)
+                    .eq('division', div)
+                    .eq('page_number', pg);
+                    
                 highlightTerm = `${jour} ${vol} ${pg}`;
             } else {
                 const text = document.getElementById('searchInput').value;
