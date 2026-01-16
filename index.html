@@ -36,7 +36,7 @@
         .hero-title { font-size: 38px; font-weight: 700; margin-bottom: 10px; }
         .hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 30px; }
 
-        /* সার্চ বার */
+        /* সার্চ বার (ফিক্সড) */
         .search-container { max-width: 750px; margin: 0 auto; position: relative; }
         .search-wrapper {
             background: #fff; border-radius: 50px; padding: 5px 5px 5px 25px;
@@ -50,14 +50,15 @@
             width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 18px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
         }
+        .btn-search:active { transform: scale(0.95); }
 
         /* এডভান্সড সার্চ প্যানেল */
         .adv-search-panel { display: none; background: #fff; border-radius: 12px; padding: 20px; margin-top: 15px; text-align: left; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* ফিচার সেকশন (ওভারল্যাপ ফিক্সড) */
+        /* ফিচার সেকশন */
         .features-section { 
             padding: 40px 15px; background: #fff; 
-            margin-top: -40px; /* পিসিতে উপরে থাকবে */
+            margin-top: -40px; 
             border-radius: 20px; position: relative; z-index: 10; 
             max-width: 1000px; margin-left: auto; margin-right: auto; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); 
@@ -79,27 +80,23 @@
         /* প্যাকেজ এবং অন্যান্য */
         .packages-section { padding: 50px 15px; }
         .package-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); margin-bottom: 20px; transition: 0.3s; }
+        .package-card:hover { transform: translateY(-5px); border: 1px solid var(--accent-color); }
         .btn-pay { display: block; width: 100%; background: var(--text-dark); color: white; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 15px; }
 
         footer { background: #222; color: #bbb; padding: 40px 0; font-size: 14px; }
         .whatsapp-float { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; line-height: 55px; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; }
 
-        /* ফরম ডিজাইন */
-        .modal-header { background: #2c3e50; color: white; }
+        /* মডাল এবং ফরম ডিজাইন */
+        .modal-header { background: #2c3e50; color: white; border-bottom: none; }
+        .modal-content { border-radius: 15px; border: none; overflow: hidden; }
         .form-label { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 5px; padding: 10px; }
+        .btn-close-white { filter: invert(1); }
 
-        /* মোবাইল রেসপনসিভ ফিক্স */
         @media (max-width: 768px) {
             .hero-title { font-size: 28px; }
             .hero-section { padding-bottom: 40px; }
-            
-            /* ফিচার সেকশন ফিক্স: মোবাইলে সার্চ বারের নিচে থাকবে */
-            .features-section { 
-                margin-top: 20px !important; 
-                width: 95%; 
-            }
-            
+            .features-section { margin-top: 20px !important; width: 95%; }
             .search-input { font-size: 16px; padding-left: 15px; }
             .search-wrapper { height: 55px; }
             .btn-search { width: 45px; height: 45px; }
@@ -151,7 +148,7 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <label class="small fw-bold text-muted">Division</label>
-                            <select id="advDiv" class="form-select form-select-sm"><option value="">Select</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
+                            <select id="advDiv" class="form-select form-select-sm"><option value="">Any</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
                         </div>
                         <div class="col-6 col-md-2">
                             <label class="small fw-bold text-muted">Page</label>
@@ -246,6 +243,53 @@
 
     <a href="https://wa.me/8801911008518" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Member Login</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="text-muted mb-3">আপনার ইমেইল এড্রেস দিয়ে লগইন করুন। আমরা আপনাকে একটি ম্যাজিক লিংক পাঠাবো।</p>
+                    <input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com">
+                    <button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkEmailModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-5">
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <i class="fas fa-paper-plane fa-4x text-success"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2">Check Your Email</h3>
+                    <p class="text-muted">আমরা আপনার ইমেইলে একটি লগইন লিংক পাঠিয়েছি। দয়া করে ইনবক্স (এবং স্প্যাম ফোল্ডার) চেক করুন।</p>
+                    <button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK, I Will Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="premiumWarningModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-dark">🔒 Login Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="lead">এটি একটি <strong>Premium</strong> জাজমেন্ট।</p>
+                    <p class="text-muted mb-4">পুরো রায় পড়ার জন্য আপনাকে লগইন করতে হবে।</p>
+                    <button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -256,11 +300,11 @@
                 <div class="modal-body p-4">
                     <form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
                         <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_subject" value="New Payment Request - CaseReference">
+                        <input type="hidden" name="_subject" value="New Payment Request">
                         <input type="hidden" name="_template" value="table">
                         <div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required></div>
                         <div class="mb-3"><label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর</label><input type="text" name="Phone" class="form-control" placeholder="017XXXXXXXX" required></div>
-                        <div class="mb-3"><label class="form-label">লগইন ইমেইল (যেটা দিয়ে একাউন্ট খুলবেন)</label><input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required></div>
+                        <div class="mb-3"><label class="form-label">লগইন ইমেইল</label><input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required></div>
                         <div class="row">
                             <div class="col-md-6 mb-3"><label class="form-label">Transaction ID (TrxID)</label><input type="text" name="TrxID" class="form-control" placeholder="TXN123456" required></div>
                             <div class="col-md-6 mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select" required><option value="Monthly (199)">মাসিক (১৯৯৳)</option><option value="Quarterly (499)">ত্রৈমাসিক (৪৯৯৳)</option><option value="Half-Yearly (700)">ষান্মাসিক (৭০০৳)</option><option value="Yearly (1200)">বার্ষিক (১২০০৳)</option></select></div>
@@ -280,19 +324,6 @@
                     <h4 class="fw-bold mb-3">My Account</h4>
                     <div id="profileInfo">Checking...</div>
                     <button class="btn btn-outline-danger btn-sm mt-3 px-4" onclick="logout()">Logout</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="checkEmailModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <div class="modal-body">
-                    <i class="fas fa-envelope-open-text fa-3x text-primary mb-3"></i>
-                    <h5>Check Your Email</h5>
-                    <p class="text-muted small">আপনার ইমেইলে একটি লগইন লিংক পাঠানো হয়েছে। স্প্যাম ফোল্ডার সহ চেক করুন।</p>
-                    <button type="button" class="btn btn-dark w-100" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -329,24 +360,49 @@
                 authDiv.innerHTML = `<button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fas fa-user-circle"></i> ${subStatus ? 'Premium' : 'My Account'}</button>`;
                 document.getElementById('profileInfo').innerHTML = `<p class="fw-bold text-primary mb-1">${currentUser.email}</p><span class="badge ${subStatus ? 'bg-success' : 'bg-warning text-dark'}">${subStatus ? 'Active' : 'Expired'}</span><p class="small text-muted mt-2">Valid Till: ${subExpiry}</p>`;
             } else {
-                authDiv.innerHTML = `<button class="btn btn-dark btn-sm rounded-pill px-4 fw-bold" onclick="login()">Login</button>`;
+                authDiv.innerHTML = `<button class="btn btn-dark btn-sm rounded-pill px-4 fw-bold" onclick="openLoginModal()">Login</button>`;
             }
         }
         checkAuth();
 
-        async function login() {
-            const email = prompt("Enter Email:");
-            if(email) {
-                const { error } = await _supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: siteLink } });
-                if(!error) new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
+        // নতুন লগইন ফাংশন (মডাল ওপেন করে)
+        function openLoginModal() {
+            document.getElementById('loginEmailInput').value = ''; // আগের ইনপুট ক্লিয়ার
+            new bootstrap.Modal(document.getElementById('loginModal')).show();
+        }
+
+        // মডাল থেকে সাবমিট করার ফাংশন
+        async function submitLogin() {
+            const email = document.getElementById('loginEmailInput').value;
+            if(!email) {
+                alert("Please enter a valid email."); // সিম্পল ভ্যালিডেশন
+                return;
+            }
+            
+            // লগইন মডাল বন্ধ করা
+            bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+
+            const { error } = await _supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: siteLink } });
+            
+            if(!error) {
+                // সফল হলে সুন্দর নোটিফিকেশন মডাল দেখানো
+                new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
+            } else {
+                alert("Error: " + error.message);
             }
         }
+
+        // ওয়ার্নিং মডাল থেকে লগইন পেজে যাওয়া
+        function triggerLoginFromModal() {
+            bootstrap.Modal.getInstance(document.getElementById('premiumWarningModal')).hide();
+            openLoginModal();
+        }
+
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
         function toggleAdvSearch() { document.getElementById('advSearchForm').style.display = document.getElementById('advSearchForm').style.display === 'block' ? 'none' : 'block'; }
         
         function resetHome() { location.reload(); }
 
-        // মোবাইল মেনু অটো ক্লোজ
         document.querySelectorAll('.nav-link-close').forEach(item => {
             item.addEventListener('click', () => {
                 const toggler = document.querySelector('.navbar-toggler');
@@ -392,7 +448,6 @@
                     return; 
                 }
                 
-                // EXACT MATCH LOGIC ADDED HERE
                 queryBuilder = queryBuilder
                     .eq('journal', jour)
                     .eq('volume', vol)
@@ -440,7 +495,11 @@
         }
 
         async function loadJudgment(item) {
-            if (item.is_premium && !currentUser) { alert("Please Login."); login(); return; }
+            // ১. লগইন না থাকলে ওয়ার্নিং মডাল দেখানো
+            if (item.is_premium && !currentUser) { 
+                new bootstrap.Modal(document.getElementById('premiumWarningModal')).show();
+                return; 
+            }
             if (item.is_premium && !subStatus) { 
                 document.getElementById('resultsArea').innerHTML = '';
                 document.getElementById('paywallMsg').style.display = 'block';
