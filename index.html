@@ -107,11 +107,18 @@
         }
         checkAuth();
 
-        async function login() {
+       async function login() {
             const email = prompt("আপনার ইমেইল দিন (Login Link যাবে):");
             if(email) {
-                // ফিক্স: _supabase ব্যবহার করা হচ্ছে
-                const { error } = await _supabase.auth.signInWithOtp({ email });
+                // আমরা এখানে সুপাবেজকে কড়া নির্দেশ দিচ্ছি লগইন শেষে কোথায় ফিরতে হবে
+                const { error } = await _supabase.auth.signInWithOtp({ 
+                    email: email,
+                    options: {
+                        // এই লিংকটি আপনার ব্রাউজারের লিংকের সাথে হুবহু এক হতে হবে
+                        emailRedirectTo: 'https://lexswordbd.github.io/casereference/'
+                    }
+                });
+                
                 if(error) alert("Error: " + error.message);
                 else alert("আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। চেক করুন!");
             }
@@ -231,4 +238,5 @@
 </body>
 
 </html>
+
 
