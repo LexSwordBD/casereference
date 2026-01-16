@@ -11,53 +11,71 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
-        body { background-color: #f4f7f6; font-family: 'Hind Siliguri', 'Segoe UI', sans-serif; }
+        body { background-color: #f8f9fa; font-family: 'Hind Siliguri', sans-serif; overflow-x: hidden; }
         
-        .navbar { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 15px 0; }
+        /* ন্যাভিগেশন */
+        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
         .navbar-brand { font-size: 26px; font-weight: 700; color: #2c3e50 !important; }
         .navbar-brand span { color: #d35400; }
-        .nav-link { color: #555 !important; font-weight: 600; margin-right: 15px; transition: 0.3s; }
-        .nav-link:hover { color: #d35400 !important; }
+        .nav-link { font-weight: 600; color: #555; margin-right: 15px; }
+        .nav-link:hover { color: #d35400; }
+
+        /* স্ক্রলিং নিউজ টিকার (নতুন) */
+        .news-ticker { background: #2c3e50; color: white; padding: 8px 0; font-size: 14px; overflow: hidden; white-space: nowrap; }
+        .ticker-content { display: inline-block; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* হিরো সেকশন */
+        .hero-section { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 80px 20px; text-align: center; color: white; }
+        .hero-title { font-size: 40px; font-weight: 700; margin-bottom: 10px; }
         
-        .hero-section { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); padding: 80px 20px; text-align: center; color: white; }
-        .hero-title { font-size: 42px; font-weight: 700; margin-bottom: 10px; }
-        
+        /* সার্চ বক্স ডিজাইন */
         .search-container { max-width: 800px; margin: 0 auto; position: relative; }
-        .search-input { width: 100%; height: 60px; border-radius: 50px; border: none; padding: 0 140px 0 30px; font-size: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .search-input:focus { outline: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .action-btns { position: absolute; right: 8px; top: 8px; }
-        .btn-search { border-radius: 40px; padding: 10px 25px; font-weight: bold; background: #d35400; color: white; border: none; }
+        .search-input { width: 100%; height: 60px; border-radius: 50px; border: none; padding: 0 130px 0 30px; font-size: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .search-input:focus { outline: none; }
+        .btn-search { position: absolute; right: 8px; top: 8px; border-radius: 40px; padding: 10px 30px; background: #d35400; color: white; border: none; font-weight: bold; }
         
-        .adv-search-panel { display: none; background: #fff; border-radius: 10px; padding: 20px; margin-top: 20px; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1); color: #333; }
+        /* এডভান্সড সার্চ প্যানেল */
+        .adv-search-panel { display: none; background: white; color: #333; padding: 25px; border-radius: 10px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: left; }
 
-        .packages-section { padding: 60px 20px; background: #fff; }
-        .heading { text-align: center; font-weight: 700; color: #333; margin-bottom: 20px; }
-        .heading span { color: #d35400; }
-        .info-text { text-align: center; max-width: 800px; margin: 0 auto 40px auto; color: #666; font-size: 16px; line-height: 1.6; }
+        /* কেন আমাদের ব্যবহার করবেন (নতুন সেকশন) */
+        .features-section { padding: 60px 20px; background: white; }
+        .feature-card { text-align: center; padding: 30px; border: 1px solid #eee; border-radius: 15px; transition: 0.3s; height: 100%; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: #d35400; }
+        .feature-icon { width: 70px; height: 70px; line-height: 70px; background: #fff0e6; color: #d35400; font-size: 30px; border-radius: 50%; margin: 0 auto 20px; }
         
-        .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
-        .package-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 30px 20px; text-align: center; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .package-card:hover { transform: translateY(-10px); border-color: #d35400; }
-        .package-card i { font-size: 40px; color: #d35400; margin-bottom: 15px; }
-        .package-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
-        .package-card .price span { font-size: 28px; font-weight: 800; color: #2c3e50; }
-        .package-card .btn { background: #2c3e50; color: white; padding: 10px 25px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 15px; }
-        .package-card .btn:hover { background: #d35400; }
+        /* প্যাকেজ সেকশন */
+        .packages-section { padding: 60px 20px; background: #f8f9fa; }
+        .package-card { background: white; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; overflow: hidden; }
+        .package-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: #27ae60; }
+        .package-card i { font-size: 40px; color: #27ae60; margin-bottom: 15px; }
+        .price span { font-size: 32px; font-weight: 800; color: #2c3e50; }
+        .btn-pay { background: #2c3e50; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 15px; }
+        
+        /* পেমেন্ট কনফার্ম বাটন */
+        .btn-confirm { background: #27ae60; color: white; padding: 15px 40px; border-radius: 50px; font-size: 18px; font-weight: bold; border: none; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4); }
+        .btn-confirm:hover { background: #219150; transform: scale(1.05); }
 
-        .result-card { background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #d35400; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
-        .highlight { background-color: #ffeb3b; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
-        
+        /* রেজাল্ট এবং রিডার */
+        .result-card { background: white; padding: 25px; border-radius: 8px; border-left: 5px solid #d35400; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
+        .highlight { background: #ffeb3b; padding: 0 3px; border-radius: 2px; }
         #readerView { display: none; background: white; padding: 50px; border-radius: 8px; font-family: 'Times New Roman', serif; font-size: 19px; line-height: 1.8; text-align: justify; margin-bottom: 50px; }
-        .paywall-msg { display: none; text-align: center; padding: 60px; background: white; border-radius: 8px; margin-bottom: 50px; border: 1px solid #ddd; }
+        
+        /* পেওয়াল মেসেজ */
+        .paywall-msg { display: none; text-align: center; padding: 50px; background: white; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 50px; }
 
-        /* পেমেন্ট ফর্ম মডাল ডিজাইন */
-        .form-label { font-weight: 600; font-size: 14px; }
-        .modal-header { background: #2c3e50; color: white; }
-        .modal-title { font-weight: 700; }
-        .btn-close { filter: invert(1); }
+        /* WhatsApp Floating Button */
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 3px #999; z-index: 100; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .whatsapp-float:hover { background-color: #128c7e; color: white; }
     </style>
 </head>
 <body>
+
+    <div class="news-ticker">
+        <div class="ticker-content">
+            📢 স্বাগতম CaseReference-এ! এখানে পাচ্ছেন ৭৫ ডিএলআর সহ হাইকোর্ট ও আপিল বিভাগের সকল জাজমেন্ট। আজই মেম্বারশিপ নিয়ে আনলিমিটেড অ্যাক্সেস উপভোগ করুন। হেল্পলাইন: ০১৯১১ ০০৮ ৫১৮।
+        </div>
+    </div>
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
@@ -68,6 +86,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('home')">হোম</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">কেন আমরা?</a></li>
                     <li class="nav-item"><a class="nav-link" href="#packages">প্যাকেজ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">যোগাযোগ</a></li>
                     <li class="nav-item ms-2" id="authDiv"></li>
@@ -79,36 +98,78 @@
     <div class="hero-section" id="homeSection">
         <div class="container">
             <h1 class="hero-title">Welcome to Case Reference</h1>
-            <p class="hero-subtitle mb-4">বাংলাদেশের বৃহত্তম অনলাইন লিগ্যাল আর্কাইভ এবং রিসার্চ প্ল্যাটফর্ম</p>
+            <p class="mb-4" style="opacity: 0.9;">বাংলাদেশের আইনাঙ্গনের বিশ্বস্ত ডিজিটাল সহযোগী</p>
             
             <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder, 75 DLR, Section 302)...">
-                <div class="action-btns">
-                    <button class="btn btn-light rounded-circle me-2" onclick="toggleAdvSearch()" title="Advanced Search"><i class="fas fa-sliders-h"></i></button>
-                    <button class="btn-search" onclick="performSearch('simple')">Search</button>
-                </div>
+                <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder, Fraud, Section 302)...">
+                <button class="btn btn-light position-absolute top-50 translate-middle-y start-0 ms-2 rounded-circle" style="left: 10px;" onclick="toggleAdvSearch()" title="Advanced Filter"><i class="fas fa-filter text-dark"></i></button>
+                <button class="btn-search" onclick="performSearch('simple')">Search</button>
 
                 <div class="adv-search-panel" id="advSearchForm">
+                    <h6 class="mb-3 border-bottom pb-2 text-primary"><i class="fas fa-search-plus"></i> সুনির্দিষ্ট জাজমেন্ট অনুসন্ধান (সব ঘর পূরণ বাধ্যতামূলক)</h6>
                     <div class="row g-2">
                         <div class="col-md-3">
-                            <label class="form-label">Journal</label>
-                            <select id="advJournal" class="form-select"><option value="">Select...</option><option value="DLR">DLR</option><option value="BLD">BLD</option><option value="ADC">ADC</option></select>
+                            <label class="form-label small fw-bold">Journal</label>
+                            <select id="advJournal" class="form-select border-danger">
+                                <option value="">Select...</option><option value="DLR">DLR</option><option value="BLD">BLD</option><option value="ADC">ADC</option>
+                            </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label">Volume</label>
-                            <input type="text" id="advVol" class="form-control" placeholder="75">
+                            <label class="form-label small fw-bold">Volume</label>
+                            <input type="text" id="advVol" class="form-control border-danger" placeholder="e.g. 75">
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Division</label>
-                            <select id="advDiv" class="form-select"><option value="">Any</option><option value="AD">Appellate (AD)</option><option value="HCD">High Court (HCD)</option></select>
+                            <label class="form-label small fw-bold">Division</label>
+                            <select id="advDiv" class="form-select border-danger">
+                                <option value="">Select...</option><option value="AD">Appellate (AD)</option><option value="HCD">High Court (HCD)</option>
+                            </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label">Page</label>
-                            <input type="text" id="advPage" class="form-control" placeholder="45">
+                            <label class="form-label small fw-bold">Page</label>
+                            <input type="text" id="advPage" class="form-control border-danger" placeholder="e.g. 45">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-dark w-100" onclick="performSearch('advanced')">Find</button>
+                            <button class="btn btn-dark w-100" onclick="performSearch('advanced')">Go</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features-section" id="features">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark">কেন <span style="color:#d35400">CaseReference</span> ব্যবহার করবেন?</h2>
+                <p class="text-muted">আপনার আইনি গবেষণাকে সহজ করতে আমরা নিয়ে এসেছি অত্যাধুনিক সব ফিচার</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-database"></i></div>
+                        <h5>বিশাল তথ্যভাণ্ডার</h5>
+                        <p class="small text-muted">ডিএলআর, বিএলডি সহ হাজার হাজার জাজমেন্টের আর্কাইভ, যা প্রতিনিয়ত আপডেট হচ্ছে।</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                        <h5>উন্নত সার্চ ইঞ্জিন</h5>
+                        <p class="small text-muted">কি-ওয়ার্ড, ধারা বা সাইটেশন দিয়ে নিমিষেই খুঁজে বের করুন কাঙ্ক্ষিত নজির।</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <h5>স্বল্প খরচ</h5>
+                        <p class="small text-muted">ছাত্র ও নবীন আইনজীবীদের কথা বিবেচনা করে নামমাত্র মূল্যে আনলিমিটেড অ্যাক্সেস।</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h5>যেকোনো ডিভাইসে</h5>
+                        <p class="small text-muted">মোবাইল, ল্যাপটপ বা ট্যাবলেটে খুব সহজেই ব্যবহারযোগ্য ইউজার ফ্রেন্ডলি ইন্টারফেস।</p>
                     </div>
                 </div>
             </div>
@@ -118,9 +179,8 @@
     <div class="container mt-4">
         <div id="resultsArea"></div>
         <div id="readerView" class="shadow-sm"></div>
-        
         <div id="paywallMsg" class="paywall-msg shadow">
-            <i class="fas fa-lock fa-4x text-warning mb-3"></i>
+            <i class="fas fa-crown fa-4x text-warning mb-3"></i>
             <h3>Premium Access Required</h3>
             <p>মেয়াদ শেষ হয়ে গেছে। দয়া করে রিনিউ করুন।</p>
             <a href="#packages" class="btn btn-primary mt-3">প্যাকেজ দেখুন</a>
@@ -129,43 +189,52 @@
 
     <div class="packages-section" id="packages">
         <div class="container">
-            <h1 class="heading">পেমেন্ট <span>সম্পন্ন করুন</span></h1>
-            <p class="info-text">
-                প্রথমে নিচের যেকোনো প্যাকেজ সিলেক্ট করে পেমেন্ট করুন। পেমেন্ট সফল হলে <b>'কনফার্ম করুন'</b> বাটনে ক্লিক করে ফরমটি পূরণ করুন। আমরা যাচাই করে ১০ মিনিটের মধ্যে আপনার একাউন্ট চালু করে দেব।
-            </p>
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">পেমেন্ট <span style="color:#d35400">সম্পন্ন করুন</span></h2>
+                <p class="text-muted mx-auto" style="max-width: 700px;">
+                    প্রথমে নিচের প্যাকেজ থেকে আপনার পছন্দমতো প্ল্যানটি পেমেন্ট করুন। এরপর <b>'পেমেন্ট কনফার্ম করুন'</b> বাটনে ক্লিক করে ফরমটি পূরণ করুন। আমরা দ্রুত আপনার একাউন্ট চালু করে দেব।
+                </p>
+            </div>
 
-            <div class="packages-grid">
-                <div class="package-card">
-                    <i class="fas fa-calendar-day"></i>
-                    <h3>মাসিক প্যাক</h3>
-                    <div class="price"><span>১৯৯৳</span> / ১ মাস</div>
-                    <a class="btn" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank">পেমেন্ট করুন</a>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-3 col-sm-6">
+                    <div class="package-card">
+                        <i class="fas fa-calendar-day"></i>
+                        <h5>মাসিক প্যাক</h5>
+                        <div class="price"><span>১৯৯৳</span> / ১ মাস</div>
+                        <a class="btn-pay" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank">পেমেন্ট করুন</a>
+                    </div>
                 </div>
-                <div class="package-card">
-                    <i class="fas fa-calendar-alt"></i>
-                    <h3>ত্রৈমাসিক প্যাক</h3>
-                    <div class="price"><span>৪৯৯৳</span> / ৩ মাস</div>
-                    <a class="btn" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank">পেমেন্ট করুন</a>
+                <div class="col-md-3 col-sm-6">
+                    <div class="package-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h5>ত্রৈমাসিক প্যাক</h5>
+                        <div class="price"><span>৪৯৯৳</span> / ৩ মাস</div>
+                        <a class="btn-pay" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank">পেমেন্ট করুন</a>
+                    </div>
                 </div>
-                <div class="package-card">
-                    <i class="fas fa-calendar-check"></i>
-                    <h3>ষান্মাসিক প্যাক</h3>
-                    <div class="price"><span>৭০০৳</span> / ৬ মাস</div>
-                    <a class="btn" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt700/LO7ESu" target="_blank">পেমেন্ট করুন</a>
+                <div class="col-md-3 col-sm-6">
+                    <div class="package-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <h5>ষান্মাসিক প্যাক</h5>
+                        <div class="price"><span>৭০০৳</span> / ৬ মাস</div>
+                        <a class="btn-pay" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt700/LO7ESu" target="_blank">পেমেন্ট করুন</a>
+                    </div>
                 </div>
-                <div class="package-card">
-                    <i class="fas fa-award"></i>
-                    <h3>বার্ষিক প্যাক</h3>
-                    <div class="price"><span>১২০০৳</span> / ১ বছর</div>
-                    <a class="btn" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank">পেমেন্ট করুন</a>
+                <div class="col-md-3 col-sm-6">
+                    <div class="package-card">
+                        <i class="fas fa-award"></i>
+                        <h5>বার্ষিক প্যাক</h5>
+                        <div class="price"><span>১২০০৳</span> / ১ বছর</div>
+                        <a class="btn-pay" href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank">পেমেন্ট করুন</a>
+                    </div>
                 </div>
             </div>
 
             <div class="text-center mt-5">
-                <button class="btn btn-success btn-lg px-5 rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                    <i class="fas fa-check-circle me-2"></i> পেমেন্ট কনফার্ম করুন (ফরম)
+                <button class="btn-confirm" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                    <i class="fas fa-check-double me-2"></i> পেমেন্ট কনফার্ম করুন
                 </button>
-                <p class="mt-3 text-muted small">হেল্পলাইন: <b>০১৯১১ ০০৮ ৫১৮</b> (WhatsApp)</p>
             </div>
         </div>
     </div>
@@ -173,72 +242,33 @@
     <footer class="bg-dark text-white text-center py-4 mt-5" id="contact">
         <div class="container">
             <h5>CaseReference BD</h5>
-            <p>Contact: 01911 008 518 | Email: legalvoicebd@gmail.com</p>
+            <p class="small opacity-75">Contact: 01911 008 518 | Email: legalvoicebd@gmail.com</p>
             <p class="small opacity-50">&copy; 2026 CaseReference. All Rights Reserved.</p>
         </div>
     </footer>
 
+    <a href="https://wa.me/8801911008518" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> পেমেন্ট ভেরিফিকেশন ফরম</h5>
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">পেমেন্ট ভেরিফিকেশন ফরম</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
                         <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_subject" value="New Payment Request - CaseReference">
-                        <input type="hidden" name="_template" value="table">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">আপনার নাম</label>
-                            <input type="text" name="Name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর</label>
-                            <input type="text" name="Phone" class="form-control" placeholder="017XXXXXXXX" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">লগইন ইমেইল (যেটা দিয়ে একাউন্ট খুলবেন)</label>
-                            <input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Transaction ID (TrxID)</label>
-                                <input type="text" name="TrxID" class="form-control" placeholder="TXN123456" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">প্যাকেজ</label>
-                                <select name="Package" class="form-select" required>
-                                    <option value="Monthly (199)">মাসিক (১৯৯৳)</option>
-                                    <option value="Quarterly (499)">ত্রৈমাসিক (৪৯৯৳)</option>
-                                    <option value="Half-Yearly (700)">ষান্মাসিক (৭০০৳)</option>
-                                    <option value="Yearly (1200)">বার্ষিক (১২০০৳)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-primary btn-lg">সাবমিট করুন</button>
-                        </div>
-                        <p class="text-muted small text-center mt-2">তথ্যগুলো আমাদের ইমেইলে পাঠানো হবে।</p>
+                        <input type="hidden" name="_subject" value="New Payment Request">
+                        <div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">মোবাইল নম্বর</label><input type="text" name="Phone" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">লগইন ইমেইল</label><input type="email" name="Email" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">Transaction ID (TrxID)</label><input type="text" name="TrxID" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select"><option>Monthly</option><option>Yearly</option></select></div>
+                        <button type="submit" class="btn btn-success w-100">সাবমিট করুন</button>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="profileModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">My Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center" id="profileInfo">Checking...</div>
-                <div class="modal-footer justify-content-center border-0">
-                    <button class="btn btn-outline-danger btn-sm px-4" onclick="logout()">Logout</button>
                 </div>
             </div>
         </div>
@@ -248,9 +278,9 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
-                    <i class="fas fa-envelope-open-text fa-3x text-success mb-3"></i>
-                    <h3>Check your Email</h3>
-                    <p class="text-muted">আমরা আপনার ইমেইলে একটি লগইন লিংক পাঠিয়েছি।</p>
+                    <i class="fas fa-envelope-open-text fa-3x text-primary mb-3"></i>
+                    <h4>Check Your Email</h4>
+                    <p class="text-muted">আপনার ইমেইলে একটি লগইন লিংক পাঠানো হয়েছে।</p>
                     <button type="button" class="btn btn-dark w-100" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
@@ -259,71 +289,51 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ================= CONFIGURE =================
         const supabaseUrl = 'https://bxzrydybnnlzrgzdqnob.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4enJ5ZHlibm5senJnemRxbm9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTQ2MzksImV4cCI6MjA4NDEzMDYzOX0.6Ikj5At5UKhKZr6y_lhmOQ-FUDxdnJOS1ZUSf6dTgEI'; 
         const githubUser = 'LexSwordBD'; 
         const repoName = 'casereference'; 
         const siteLink = 'https://lexswordbd.github.io/casereference/';
-        // =============================================
 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
         let subStatus = false;
-        let subExpiry = "Not Active";
 
         async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
             const authDiv = document.getElementById('authDiv');
-            
             if (session) {
                 currentUser = session.user;
                 const { data } = await _supabase.from('members').select('*').eq('email', currentUser.email).single();
-                
-                if(data && new Date(data.expiry_date) > new Date()) {
-                    subStatus = true;
-                    subExpiry = new Date(data.expiry_date).toDateString();
-                } else {
-                    subStatus = false;
-                    subExpiry = "Expired / No Plan";
-                }
-
-                authDiv.innerHTML = `
-                    <button class="btn btn-outline-dark rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#profileModal">
-                        <i class="fas fa-user-circle"></i> ${subStatus ? 'Premium' : 'Account'}
-                    </button>`;
-                
-                document.getElementById('profileInfo').innerHTML = `
-                    <h5 class="fw-bold mb-1">${currentUser.email}</h5>
-                    <div class="card bg-light border-0 p-3 mt-3">
-                        <p class="mb-1">Status: <span class="badge ${subStatus ? 'bg-success' : 'bg-warning text-dark'}">${subStatus ? 'Active' : 'Expired'}</span></p>
-                        <p class="mb-0 small">Valid Till: <strong>${subExpiry}</strong></p>
-                    </div>
-                `;
+                subStatus = (data && new Date(data.expiry_date) > new Date());
+                authDiv.innerHTML = `<button class="btn btn-outline-dark rounded-pill px-3" onclick="logout()"><i class="fas fa-user-circle"></i> ${subStatus ? 'Premium' : 'My Account'}</button>`;
             } else {
-                authDiv.innerHTML = `<button class="btn btn-dark rounded-pill px-4 fw-bold" onclick="login()">Login</button>`;
+                authDiv.innerHTML = `<button class="btn btn-dark rounded-pill px-4" onclick="login()">Login</button>`;
             }
         }
         checkAuth();
 
         async function login() {
-            const email = prompt("Enter Email Address:");
+            const email = prompt("Enter Email:");
             if(email) {
                 const { error } = await _supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: siteLink } });
                 if(!error) new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
-                else alert(error.message);
             }
         }
-
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
         function toggleAdvSearch() { document.getElementById('advSearchForm').style.display = document.getElementById('advSearchForm').style.display === 'block' ? 'none' : 'block'; }
-        function showSection(sec) { document.getElementById('packages').style.display = 'block'; document.getElementById('homeSection').scrollIntoView({behavior: 'smooth'}); }
+        function showSection(sec) { 
+            document.getElementById('packages').style.display = 'block'; 
+            document.getElementById('features').style.display = 'block';
+            document.getElementById('homeSection').scrollIntoView({behavior: 'smooth'}); 
+        }
 
         async function performSearch(type) {
             const resultsDiv = document.getElementById('resultsArea');
             document.getElementById('readerView').style.display = 'none';
             document.getElementById('paywallMsg').style.display = 'none';
             document.getElementById('packages').style.display = 'none';
+            document.getElementById('features').style.display = 'none'; // সার্চ করলে ফিচার লুকাবে
             document.getElementById('homeSection').style.padding = "30px 0";
 
             resultsDiv.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
@@ -334,11 +344,18 @@
             if (type === 'advanced') {
                 const jour = document.getElementById('advJournal').value;
                 const vol = document.getElementById('advVol').value;
+                const div = document.getElementById('advDiv').value;
                 const pg = document.getElementById('advPage').value;
-                if (!jour && !vol && !pg) { alert("Please fill at least Journal and Page."); return; }
-                if(jour) queryBuilder = queryBuilder.eq('journal', jour);
-                if(vol) queryBuilder = queryBuilder.eq('volume', vol);
-                if(pg) queryBuilder = queryBuilder.eq('page_number', pg);
+
+                // নতুন লজিক: সব ফিল্ড পূর্ণ করা বাধ্যতামূলক
+                if (!jour || !vol || !div || !pg) { 
+                    alert("Advanced Search-এর জন্য সব কয়টি ঘর (Journal, Volume, Division, Page) পূরণ করা বাধ্যতামূলক।");
+                    resultsDiv.innerHTML = "";
+                    document.getElementById('features').style.display = 'block'; // ভুল করলে আবার হোমপেজ দেখাও
+                    return; 
+                }
+
+                queryBuilder = queryBuilder.eq('journal', jour).eq('volume', vol).eq('division', div).eq('page_number', pg);
                 highlightTerm = `${jour} ${vol} ${pg}`;
             } else {
                 const text = document.getElementById('searchInput').value;
@@ -350,34 +367,23 @@
             const { data, error } = await queryBuilder.limit(20);
 
             if (error || !data.length) {
-                resultsDiv.innerHTML = '<div class="text-center mt-5 text-muted"><h4>No cases found.</h4></div>';
+                resultsDiv.innerHTML = '<div class="text-center mt-5"><h4>No cases found.</h4></div>';
                 document.getElementById('packages').style.display = 'block';
                 return;
             }
 
             resultsDiv.innerHTML = `<p class="text-muted mb-4">Found ${data.length} results</p>`;
             data.forEach(item => {
-                const safeHeadnote = item.headnote || "";
-                const highlightedHeadnote = highlightText(safeHeadnote, highlightTerm);
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.onclick = () => loadJudgment(item);
-                div.innerHTML = `
-                    <div class="d-flex justify-content-between"><h5 class="text-primary">${item.title}</h5>${item.is_premium ? '<span class="badge bg-danger">Premium</span>' : '<span class="badge bg-success">Free</span>'}</div>
-                    <div class="mb-2 text-muted small"><strong>${item.citation}</strong> | ${item.division}</div>
-                    <div class="headnote-text">${highlightedHeadnote}</div>`;
+                div.innerHTML = `<h5>${item.title}</h5><p class="small text-muted mb-0">${item.citation}</p><p class="mt-2 text-dark">${item.headnote || ''}</p>`;
                 resultsDiv.appendChild(div);
             });
         }
 
-        function highlightText(text, keyword) {
-            if (!keyword) return text;
-            const regex = new RegExp(`(${keyword})`, "gi");
-            return text.replace(regex, '<span class="highlight">$1</span>');
-        }
-
         async function loadJudgment(item) {
-            if (item.is_premium && !currentUser) { alert("Please Login first."); login(); return; }
+            if (item.is_premium && !currentUser) { alert("Please Login."); login(); return; }
             if (item.is_premium && !subStatus) { 
                 document.getElementById('resultsArea').innerHTML = '';
                 document.getElementById('paywallMsg').style.display = 'block';
@@ -387,7 +393,6 @@
             document.getElementById('resultsArea').innerHTML = '';
             const viewer = document.getElementById('readerView');
             viewer.style.display = 'block';
-            viewer.innerHTML = 'Loading...';
             
             try {
                 const url = `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/judgments/${item.github_filename}`;
@@ -396,16 +401,9 @@
                 const start = `===${item.case_anchor}===`;
                 const end = `===End===`;
                 const sIdx = fullText.indexOf(start);
-                let content = "Content not found.";
-                if(sIdx !== -1) {
-                    const eIdx = fullText.indexOf(end, sIdx);
-                    if(eIdx !== -1) content = fullText.substring(sIdx + start.length, eIdx);
-                }
-                const searchTerm = document.getElementById('searchInput').value;
-                if(searchTerm) content = highlightText(content, searchTerm);
-
-                viewer.innerHTML = `<button class="btn btn-light mb-3" onclick="location.reload()">Back</button><h2 class="text-center">${item.title}</h2><hr>${content}`;
-            } catch (e) { viewer.innerHTML = "Error."; }
+                let content = sIdx !== -1 ? fullText.substring(sIdx + start.length, fullText.indexOf(end, sIdx)) : "Content Error";
+                viewer.innerHTML = `<button class="btn btn-light mb-3" onclick="location.reload()">Back</button><h3 class="text-center">${item.title}</h3><hr>${content}`;
+            } catch (e) { viewer.innerHTML = "Error loading."; }
         }
     </script>
 </body>
