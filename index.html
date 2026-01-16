@@ -10,173 +10,135 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* ফন্ট ইমপোর্ট */
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
+        
         :root {
-            --primary-color: #2c3e50; /* Deep Navy */
-            --accent-color: #d35400;  /* Burnt Orange */
-            --success-color: #27ae60;
-            --text-color: #333;
-            --bg-light: #f8f9fa;
+            --primary-grad: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); /* আগের নীল ব্যাকগ্রাউন্ড */
+            --accent-color: #d35400;
+            --text-dark: #2c3e50;
         }
 
-        body { 
-            background-color: var(--bg-light); 
-            font-family: 'Hind Siliguri', sans-serif; 
-            color: var(--text-color);
-            overflow-x: hidden; /* মোবাইলে ডানে বামে নড়বে না */
-        }
-
-        /* --- ১. নেভিগেশন বার (মোবাইল অপ্টিমাইজড) --- */
-        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        .navbar-brand { font-size: 24px; font-weight: 800; color: var(--primary-color) !important; letter-spacing: -0.5px; }
+        body { background-color: #f4f7f6; font-family: 'Hind Siliguri', sans-serif; overflow-x: hidden; }
+        
+        /* ন্যাভিগেশন */
+        .navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 12px 0; }
+        .navbar-brand { font-size: 24px; font-weight: 700; color: var(--text-dark) !important; }
         .navbar-brand span { color: var(--accent-color); }
-        .nav-link { font-weight: 600; color: #555; font-size: 15px; margin: 0 10px; }
-        .navbar-toggler { border: none; padding: 0; }
-        .navbar-toggler:focus { box-shadow: none; }
+        .nav-link { font-weight: 600; color: #555; margin: 0 10px; font-size: 16px; }
 
-        /* --- ২. নিউজ টিকার --- */
-        .news-ticker { background: var(--primary-color); color: #fff; font-size: 13px; padding: 8px 0; overflow: hidden; white-space: nowrap; }
-        .ticker-content { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* --- ৩. হিরো সেকশন & সার্চ বার (User Favorite Design) --- */
+        /* হিরো সেকশন (আগের কালার) */
         .hero-section { 
-            background: linear-gradient(180deg, #ffffff 0%, #eef2f3 100%); 
-            padding: 40px 15px 60px 15px; 
-            text-align: center; 
-            border-bottom: 1px solid #ddd;
+            background: var(--primary-grad); 
+            padding: 60px 15px 80px 15px; 
+            text-align: center; color: white; 
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
         }
-        .hero-title { 
-            font-size: 32px; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; 
-            font-family: 'Merriweather', serif; /* ইংরেজি টাইটেলের জন্য */
-        }
-        .hero-subtitle { color: #666; font-size: 15px; margin-bottom: 30px; }
+        .hero-title { font-size: 38px; font-weight: 700; margin-bottom: 10px; }
+        .hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 30px; }
 
-        /* সেই কাঙ্ক্ষিত সার্চ বার ডিজাইন */
+        /* --- ফিক্সড সার্চ বার (মোবাইল ও পিসির জন্য পারফেক্ট) --- */
+        .search-container { max-width: 750px; margin: 0 auto; position: relative; }
+        
         .search-wrapper {
-            max-width: 700px; margin: 0 auto; position: relative;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08); border-radius: 50px; background: #fff;
-            display: flex; align-items: center; border: 2px solid #eee; transition: 0.3s;
+            background: #fff;
+            border-radius: 50px; /* ক্যাপসুল শেপ */
+            padding: 5px 5px 5px 25px; /* ইনপুটের বামে জায়গা */
+            display: flex; /* ফ্লেক্সবক্স ব্যবহারের কারণে ভাঙবে না */
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: 0.3s;
+            height: 60px; /* ফিক্সড হাইট */
         }
-        .search-wrapper:focus-within { border-color: var(--accent-color); }
         
         .search-input { 
-            flex-grow: 1; border: none; height: 55px; padding-left: 25px; 
-            font-size: 17px; background: transparent; outline: none; border-radius: 50px 0 0 50px;
+            border: none; outline: none; flex-grow: 1; font-size: 18px; color: #333;
+            background: transparent; height: 100%;
         }
-        
-        /* ডানদিকের ফিল্টার আইকন */
-        .filter-btn {
-            background: none; border: none; padding: 0 15px; 
-            color: #777; font-size: 20px; cursor: pointer; border-left: 1px solid #eee;
-            height: 35px; display: flex; align-items: center;
-        }
-        .filter-btn:hover { color: var(--accent-color); }
 
-        /* সার্চ বাটন */
-        .main-search-btn {
-            background: var(--accent-color); color: white; border: none;
-            width: 50px; height: 45px; border-radius: 50%; margin: 5px;
-            font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        /* ফিল্টার বাটন */
+        .btn-filter {
+            background: none; border: none; color: #777; font-size: 20px;
+            padding: 0 15px; border-left: 1px solid #eee; height: 30px;
+            display: flex; align-items: center;
         }
-        .main-search-btn:active { transform: scale(0.95); }
+
+        /* সার্চ বাটন (পারফেক্ট গোল) */
+        .btn-search { 
+            background: var(--accent-color); color: white; border: none;
+            width: 48px; height: 48px; border-radius: 50%; /* পারফেক্ট গোল */
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0; /* চ্যাপ্টা হবে না */
+            box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
+        }
+        .btn-search:active { transform: scale(0.95); }
 
         /* এডভান্সড সার্চ প্যানেল */
         .adv-search-panel { 
-            display: none; background: #fff; border: 1px solid #ddd; 
-            border-radius: 12px; padding: 20px; margin-top: 15px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: left;
+            display: none; background: #fff; border-radius: 12px; 
+            padding: 20px; margin-top: 15px; text-align: left; color: #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* --- ৪. ফিচার কার্ড (Mobile Responsive Grid) --- */
-        .features-section { padding: 40px 15px; background: #fff; }
-        .feature-card { 
-            padding: 20px; border-radius: 12px; border: 1px solid #f0f0f0; 
-            text-align: center; margin-bottom: 15px; transition: 0.3s;
-        }
-        .feature-icon { 
-            width: 50px; height: 50px; line-height: 50px; border-radius: 50%; 
-            background: #fff5f0; color: var(--accent-color); font-size: 22px; margin: 0 auto 15px; 
-        }
+        /* ফিচার কার্ড (মোবাইল গ্রিড) */
+        .features-section { padding: 40px 15px; background: #fff; margin-top: -30px; border-radius: 20px; position: relative; z-index: 10; max-width: 1000px; margin-left: auto; margin-right: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .feature-icon { font-size: 28px; color: var(--accent-color); margin-bottom: 10px; }
 
-        /* --- ৫. রেজাল্ট ডিজাইন (Professional Look) --- */
+        /* রেজাল্ট কার্ড */
         .result-card { 
-            background: white; padding: 20px; border-radius: 10px; 
-            border-bottom: 1px solid #eee; margin-bottom: 15px; cursor: pointer; 
-            transition: 0.2s; position: relative;
-        }
-        .result-card:hover { background: #fdfdfd; }
-        .result-card h5 { 
-            color: #1a237e; /* Professional Navy Blue Title */
-            font-family: 'Merriweather', serif; 
-            font-weight: 700; font-size: 18px; margin-bottom: 5px; 
-            line-height: 1.4;
-        }
-        .citation-badge { 
-            background: #e0e0e0; color: #333; font-size: 12px; font-weight: 700; 
-            padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px;
+            background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; 
+            border-left: 5px solid var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            cursor: pointer;
         }
         .headnote-text { 
-            color: #444; font-size: 15px; line-height: 1.6; 
-            text-align: justify; /* জাস্টিফাই মোড */
-            font-family: 'Hind Siliguri', sans-serif;
+            text-align: justify; font-size: 15px; line-height: 1.6; color: #444; margin-top: 10px; 
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; /* মোবাইলে বেশি বড় টেক্সট লুকাবে */
         }
-        .highlight { background-color: #ffeb3b; padding: 0 2px; font-weight: 600; border-radius: 2px; }
+        .highlight { background-color: #ffeb3b; padding: 0 2px; border-radius: 3px; }
 
-        /* --- ৬. প্যাকেজ ডিজাইন --- */
-        .packages-section { padding: 50px 15px; background: #f4f6f9; }
+        /* প্যাকেজ কার্ড */
+        .packages-section { padding: 50px 15px; }
         .package-card { 
-            background: white; padding: 25px; border-radius: 15px; text-align: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid white;
+            background: white; border-radius: 15px; padding: 25px; text-align: center; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05); margin-bottom: 20px; transition: 0.3s;
         }
-        .package-card.popular { border: 2px solid var(--accent-color); position: relative; }
-        .package-card i { font-size: 35px; color: var(--success-color); margin-bottom: 15px; }
+        .package-card:hover { transform: translateY(-5px); border: 1px solid var(--accent-color); }
         .btn-pay { 
-            background: var(--primary-color); color: white; padding: 10px 0; 
-            width: 100%; display: block; border-radius: 8px; text-decoration: none; font-weight: 600; 
+            display: block; width: 100%; background: var(--text-dark); color: white; 
+            padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 15px; 
         }
 
-        /* --- ৭. অন্যান্য (Float Button, Modals) --- */
-        .whatsapp-float {
-            position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px;
-            background-color: #25d366; color: #FFF; border-radius: 50%;
-            text-align: center; font-size: 28px; line-height: 55px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000;
-        }
-        #readerView { display: none; background: white; padding: 30px; border-radius: 8px; text-align: justify; font-size: 18px; line-height: 1.8; margin-bottom: 50px; }
+        /* ফুটার */
+        footer { background: #222; color: #bbb; padding: 40px 0; font-size: 14px; }
+        footer h5 { color: #fff; margin-bottom: 15px; }
         
-        /* মোবাইল রেসপনসিভ মিডিয়া কোয়েরি */
+        /* ফ্লোটিং বাটন */
+        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; line-height: 55px; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; }
+
+        /* মোবাইল রেসপনসিভ এডজাস্টমেন্ট */
         @media (max-width: 768px) {
-            .hero-title { font-size: 26px; }
-            .search-input { font-size: 15px; }
-            .navbar-brand { font-size: 20px; }
-            .package-card { margin-bottom: 15px; }
-            #readerView { padding: 15px; font-size: 16px; }
-            .features-section .col-6 { margin-bottom: 15px; } /* মোবাইলে ফিচারগুলো পাশাপাশি ২টা দেখাবে */
+            .hero-title { font-size: 28px; }
+            .hero-section { padding-bottom: 60px; }
+            .search-input { font-size: 16px; padding-left: 15px; }
+            .search-wrapper { height: 55px; } /* মোবাইলে একটু ছোট */
+            .btn-search { width: 45px; height: 45px; }
+            .features-section { margin-top: -40px; width: 95%; }
+            .col-6 { padding: 5px; } /* মোবাইলে কলামের গ্যাপ কমানো */
         }
     </style>
 </head>
 <body>
 
-    <div class="news-ticker">
-        <div class="ticker-content">
-            📢 স্বাগতম CaseReference-এ! ৭৫ ডিএলআর সহ হাইকোর্ট ও আপিল বিভাগের সকল জাজমেন্ট এখন এক ক্লিকে। হেল্পলাইন: ০১৯১১ ০০৮ ৫১৮।
-        </div>
-    </div>
-
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#" onclick="location.reload()">Case<span>Reference</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars"></i>
+                <i class="fas fa-bars border py-2 px-3 rounded"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center mt-2 mt-lg-0">
+                <ul class="navbar-nav ms-auto align-items-center mt-3 mt-lg-0">
                     <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('home')">হোম</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">ফিচার</a></li>
                     <li class="nav-item"><a class="nav-link" href="#packages">প্যাকেজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">যোগাযোগ</a></li>
                     <li class="nav-item ms-lg-2 mt-2 mt-lg-0" id="authDiv"></li>
                 </ul>
             </div>
@@ -188,84 +150,78 @@
             <h1 class="hero-title">Welcome to Case Reference</h1>
             <p class="hero-subtitle">বাংলাদেশের আইনাঙ্গনের বিশ্বস্ত ডিজিটাল সহযোগী</p>
             
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder, 75 DLR)...">
-                
-                <button class="filter-btn" onclick="toggleAdvSearch()" title="Advanced Filter">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-                
-                <button class="main-search-btn" onclick="performSearch('simple')">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="কী খুঁজতে চান? (যেমন: Murder)...">
+                    
+                    <button class="btn-filter" onclick="toggleAdvSearch()" title="Advanced Filter">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
+                    
+                    <button class="btn-search" onclick="performSearch('simple')">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
 
-            <div class="adv-search-panel" id="advSearchForm">
-                <h6 class="mb-3 text-primary border-bottom pb-2 small fw-bold">ADVANCED FILTERING (ALL FIELDS REQUIRED)</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3">
-                        <label class="small text-muted fw-bold">Journal</label>
-                        <select id="advJournal" class="form-select form-select-sm"><option value="">Select</option><option value="DLR">DLR</option><option value="BLD">BLD</option><option value="ADC">ADC</option></select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="small text-muted fw-bold">Vol</label>
-                        <input type="number" id="advVol" class="form-control form-control-sm" placeholder="75">
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <label class="small text-muted fw-bold">Division</label>
-                        <select id="advDiv" class="form-select form-select-sm"><option value="">Any</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="small text-muted fw-bold">Page</label>
-                        <input type="number" id="advPage" class="form-control form-control-sm" placeholder="45">
-                    </div>
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button class="btn btn-dark btn-sm w-100 mt-2 mt-md-0" onclick="performSearch('advanced')">Find Case</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="features-section" id="features">
-        <div class="container">
-            <div class="row g-3">
-                <div class="col-6 col-md-3">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                        <h6 class="fw-bold">দ্রুত সার্চ</h6>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-database"></i></div>
-                        <h6 class="fw-bold">বিশাল তথ্যভাণ্ডার</h6>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
-                        <h6 class="fw-bold">মোবাইল ফ্রেন্ডলি</h6>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-headset"></i></div>
-                        <h6 class="fw-bold">২৪/৭ সাপোর্ট</h6>
+                <div class="adv-search-panel" id="advSearchForm">
+                    <h6 class="text-primary mb-3 border-bottom pb-2" style="font-size:14px; font-weight:700;">ADVANCED FILTER (ALL REQUIRED)</h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3">
+                            <label class="small fw-bold text-muted">Journal</label>
+                            <select id="advJournal" class="form-select form-select-sm"><option value="">Select</option><option value="DLR">DLR</option><option value="BLD">BLD</option><option value="ADC">ADC</option></select>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-muted">Vol</label>
+                            <input type="text" id="advVol" class="form-control form-control-sm" placeholder="75">
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="small fw-bold text-muted">Division</label>
+                            <select id="advDiv" class="form-select form-select-sm"><option value="">Any</option><option value="AD">AD</option><option value="HCD">HCD</option></select>
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-muted">Page</label>
+                            <input type="text" id="advPage" class="form-control form-control-sm" placeholder="45">
+                        </div>
+                        <div class="col-12 col-md-2 d-flex align-items-end">
+                            <button class="btn btn-dark btn-sm w-100 mt-2 mt-md-0" onclick="performSearch('advanced')">Find Case</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container mt-2">
+    <div class="features-section">
+        <div class="row text-center g-3">
+            <div class="col-6 col-md-3">
+                <i class="fas fa-bolt feature-icon"></i>
+                <h6 class="fw-bold">দ্রুত সার্চ</h6>
+            </div>
+            <div class="col-6 col-md-3">
+                <i class="fas fa-database feature-icon"></i>
+                <h6 class="fw-bold">বিশাল আর্কাইভ</h6>
+            </div>
+            <div class="col-6 col-md-3">
+                <i class="fas fa-mobile-alt feature-icon"></i>
+                <h6 class="fw-bold">মোবাইল ফ্রেন্ডলি</h6>
+            </div>
+            <div class="col-6 col-md-3">
+                <i class="fas fa-headset feature-icon"></i>
+                <h6 class="fw-bold">২৪/৭ সাপোর্ট</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
         <div id="resultsArea"></div>
-        <div id="readerView" class="shadow-sm border"></div>
-        <div id="paywallMsg" class="text-center py-5 border rounded bg-white shadow-sm" style="display:none; margin-bottom:50px;">
+        
+        <div id="readerView" class="p-4 bg-white rounded shadow-sm" style="display:none; margin-bottom:50px;"></div>
+        
+        <div id="paywallMsg" class="text-center py-5 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px;">
             <i class="fas fa-crown fa-3x text-warning mb-3"></i>
             <h3>Premium Access Required</h3>
-            <p class="text-muted">এই জাজমেন্টটি পড়ার জন্য আপনার মেম্বারশিপ রিনিউ করুন।</p>
-            <a href="#packages" class="btn btn-primary btn-sm px-4 rounded-pill">প্যাকেজ দেখুন</a>
+            <p class="text-muted">মেম্বারশিপ রিনিউ করতে নিচের প্যাকেজ দেখুন।</p>
+            <a href="#packages" class="btn btn-primary rounded-pill px-4">প্যাকেজ দেখুন</a>
         </div>
     </div>
 
@@ -283,8 +239,8 @@
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
-                    <div class="package-card popular">
-                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Popular</span>
+                    <div class="package-card" style="border: 2px solid var(--accent-color);">
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Best</span>
                         <i class="fas fa-calendar-alt"></i>
                         <h5>ত্রৈমাসিক</h5>
                         <div class="h3 fw-bold my-2">৪৯৯৳</div>
@@ -309,18 +265,21 @@
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <button class="btn btn-success rounded-pill px-5 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                    <i class="fas fa-check-circle me-2"></i> পেমেন্ট কনফার্ম করুন
+            <div class="text-center mt-5">
+                <button class="btn btn-success btn-lg px-5 rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                    <i class="fas fa-check-double me-2"></i> পেমেন্ট কনফার্ম করুন
                 </button>
             </div>
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5 mb-5">
-        <div class="container">
-            <p class="mb-1 fw-bold">CaseReference BD</p>
-            <p class="small opacity-75 mb-0">Bashundhara Riverview, Dhaka.</p>
+    <footer id="contact">
+        <div class="container text-center">
+            <h5 class="fw-bold">CaseReference BD</h5>
+            <p class="mb-1 text-light small">Bashundhara Riverview, Dhaka.</p>
+            <p class="mb-3 text-light small">Contact: 01911 008 518 | Email: legalvoicebd@gmail.com</p>
+            <hr style="border-color: #555;">
+            <p class="mb-0 small text-secondary">&copy; 2026 CaseReference. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -328,15 +287,15 @@
 
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0">
+            <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fs-6">পেমেন্ট ভেরিফিকেশন ফরম</h5>
+                    <h5 class="modal-title">পেমেন্ট ভেরিফিকেশন ফরম</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
                         <input type="hidden" name="_captcha" value="false">
-                        <input type="hidden" name="_subject" value="New Payment">
+                        <input type="hidden" name="_subject" value="New Payment Request">
                         <div class="mb-2"><label class="small fw-bold">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div>
                         <div class="mb-2"><label class="small fw-bold">মোবাইল নম্বর</label><input type="text" name="Phone" class="form-control" required></div>
                         <div class="mb-2"><label class="small fw-bold">লগইন ইমেইল</label><input type="email" name="Email" class="form-control" required></div>
@@ -349,14 +308,26 @@
         </div>
     </div>
 
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <div class="modal-body">
+                    <h4 class="fw-bold mb-3">My Account</h4>
+                    <div id="profileInfo">Checking...</div>
+                    <button class="btn btn-outline-danger btn-sm mt-3 px-4" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="checkEmailModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-4">
                 <div class="modal-body">
-                    <i class="fas fa-paper-plane fa-3x text-primary mb-3"></i>
-                    <h5>Email Sent!</h5>
-                    <p class="text-muted small">আপনার ইমেইলে একটি লগইন লিংক পাঠানো হয়েছে। ইনবক্স চেক করুন।</p>
-                    <button type="button" class="btn btn-dark btn-sm w-100" data-bs-dismiss="modal">OK</button>
+                    <i class="fas fa-envelope-open-text fa-3x text-primary mb-3"></i>
+                    <h5>Check Your Email</h5>
+                    <p class="text-muted small">আপনার ইমেইলে একটি লগইন লিংক পাঠানো হয়েছে। স্প্যাম ফোল্ডার সহ চেক করুন।</p>
+                    <button type="button" class="btn btn-dark w-100" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -373,6 +344,7 @@
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
         let subStatus = false;
+        let subExpiry = "";
 
         async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
@@ -380,8 +352,23 @@
             if (session) {
                 currentUser = session.user;
                 const { data } = await _supabase.from('members').select('*').eq('email', currentUser.email).single();
-                subStatus = (data && new Date(data.expiry_date) > new Date());
-                authDiv.innerHTML = `<button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" onclick="logout()"><i class="fas fa-user-circle"></i> ${subStatus ? 'Premium' : 'Account'}</button>`;
+                
+                if(data && new Date(data.expiry_date) > new Date()) {
+                    subStatus = true;
+                    subExpiry = new Date(data.expiry_date).toDateString();
+                } else {
+                    subStatus = false;
+                    subExpiry = "Expired / Free";
+                }
+
+                authDiv.innerHTML = `<button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fas fa-user-circle"></i> ${subStatus ? 'Premium' : 'My Account'}</button>`;
+                
+                document.getElementById('profileInfo').innerHTML = `
+                    <p class="fw-bold text-primary mb-1">${currentUser.email}</p>
+                    <span class="badge ${subStatus ? 'bg-success' : 'bg-warning text-dark'}">${subStatus ? 'Active' : 'Expired'}</span>
+                    <p class="small text-muted mt-2">Valid Till: ${subExpiry}</p>
+                `;
+
             } else {
                 authDiv.innerHTML = `<button class="btn btn-dark btn-sm rounded-pill px-4 fw-bold" onclick="login()">Login</button>`;
             }
@@ -406,7 +393,6 @@
             document.getElementById('packages').style.display = 'none';
             document.getElementById('homeSection').style.padding = "20px 0";
 
-            // খালি সার্চ ভ্যালিডেশন
             if (type !== 'advanced' && !document.getElementById('searchInput').value.trim()) {
                 alert("দয়া করে সার্চ বক্সে কিছু লিখুন।");
                 return;
@@ -422,7 +408,7 @@
                 const vol = document.getElementById('advVol').value;
                 const pg = document.getElementById('advPage').value;
                 if (!jour || !vol || !pg) { 
-                    alert("Advanced Search-এর জন্য Journal, Volume এবং Page ঘরগুলো পূরণ করা বাধ্যতামূলক।");
+                    alert("Advanced Search-এর জন্য সব ঘর পূরণ করা বাধ্যতামূলক।");
                     resultsDiv.innerHTML = "";
                     return; 
                 }
@@ -449,18 +435,13 @@
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.onclick = () => loadJudgment(item);
-                
-                // প্রফেশনাল রেজাল্ট কার্ড ডিজাইন
                 div.innerHTML = `
                     <div class="d-flex justify-content-between align-items-start">
-                        <h5 class="mb-2">${item.title}</h5>
+                        <h5 class="mb-1" style="color:#1a237e; font-weight:700;">${item.title}</h5>
                         ${item.is_premium ? '<i class="fas fa-lock text-danger small"></i>' : '<i class="fas fa-unlock text-success small"></i>'}
                     </div>
-                    <div>
-                        <span class="citation-badge">${item.citation}</span>
-                        <span class="text-muted small ms-2">${item.division || ''}</span>
-                    </div>
-                    <div class="headnote-text mt-2">${highlightedHeadnote}</div>
+                    <div><span class="badge bg-light text-dark border">${item.citation}</span> <span class="small text-muted ms-1">${item.division || ''}</span></div>
+                    <div class="headnote-text">${highlightedHeadnote}</div>
                 `;
                 resultsDiv.appendChild(div);
             });
@@ -494,7 +475,6 @@
                 const sIdx = fullText.indexOf(start);
                 let content = sIdx !== -1 ? fullText.substring(sIdx + start.length, fullText.indexOf(end, sIdx)) : "Content Error";
                 
-                // রিডার ভিউতে সার্চ হাইলাইট
                 const searchTerm = document.getElementById('searchInput').value;
                 if(searchTerm) content = highlightText(content, searchTerm);
 
@@ -502,7 +482,7 @@
                     <button class="btn btn-light btn-sm mb-3 border" onclick="location.reload()"><i class="fas fa-arrow-left"></i> Back</button>
                     <h4 class="text-center fw-bold" style="color:#1a237e">${item.title}</h4>
                     <p class="text-center text-muted fw-bold border-bottom pb-3">${item.citation}</p>
-                    <div class="mt-4" style="text-align: justify;">${content}</div>
+                    <div class="mt-4" style="text-align: justify; font-size:18px; line-height:1.8;">${content}</div>
                 `;
             } catch (e) { viewer.innerHTML = "Error loading judgment."; }
         }
