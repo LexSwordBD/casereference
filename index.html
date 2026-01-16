@@ -76,22 +76,27 @@
         <div id="readerView"></div>
     </div>
 
-    <script>
+   <script>
         // ============================================
-        // আপনার সেটিং (এখানে পরিবর্তন করুন)
+        // ঠিক করা কনফিগারেশন (Variable Name Fixed)
         // ============================================
         const supabaseUrl = 'https://bxzrydybnnlzrgzdqnob.supabase.co'; 
-        const supabaseKey = 'sb_publishable_0dMI9YVQM7Bu8HD51avgZw_W9xmk1-P'; 
+        
+        // আপনার দেওয়া সঠিক anon key টি এখানে বসানো হলো
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4enJ5ZHlibm5senJnemRxbm9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTQ2MzksImV4cCI6MjA4NDEzMDYzOX0.6Ikj5At5UKhKZr6y_lhmOQ-FUDxdnJOS1ZUSf6dTgEI'; 
+        
         const githubUser = 'LexSwordBD'; 
         const repoName = 'casereference'; 
         // ============================================
 
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // ফিক্স: ভেরিয়েবল নাম supabase এর বদলে _supabase করা হলো যাতে কনফ্লিক্ট না হয়
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
         let currentUser = null;
 
         // ইউজার চেক
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            // ফিক্স: _supabase ব্যবহার করা হচ্ছে
+            const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
                 currentUser = session.user;
                 document.getElementById('authDiv').innerHTML = `
@@ -105,35 +110,47 @@
         async function login() {
             const email = prompt("আপনার ইমেইল দিন (Login Link যাবে):");
             if(email) {
-                const { error } = await supabase.auth.signInWithOtp({ email });
+                // ফিক্স: _supabase ব্যবহার করা হচ্ছে
+                const { error } = await _supabase.auth.signInWithOtp({ email });
                 if(error) alert("Error: " + error.message);
                 else alert("আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে। চেক করুন!");
             }
         }
-        async function logout() { await supabase.auth.signOut(); location.reload(); }
+        async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
         // সার্চ ফাংশন
         async function performSearch() {
             const query = document.getElementById('searchInput').value;
-            if(!query) return;
+            if(!query) {
+                alert("দয়া করে সার্চ বক্সে কিছু লিখুন!");
+                return;
+            }
 
-            // ডিজাইন পরিবর্তন (সার্চ দিলে উপরে উঠে যাবে)
+            // ডিজাইন পরিবর্তন
             document.getElementById('homeSection').style.padding = "30px 0";
             document.getElementById('homeSection').style.background = "#f8f9fa";
             document.getElementById('readerView').style.display = 'none';
 
             const resultsDiv = document.getElementById('resultsArea');
-            resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-warning"></div></div>';
+            resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-warning">Loading...</div></div>';
 
-            // ডাটাবেস খোঁজা
-            const { data, error } = await supabase
+            console.log("Searching for:", query); // ডিবাগিং এর জন্য
+
+            // ডাটাবেস খোঁজা (ফিক্স: _supabase ব্যবহার করা হচ্ছে)
+            const { data, error } = await _supabase
                 .from('cases')
                 .select('*')
                 .or(`title.ilike.%${query}%,citation.ilike.%${query}%,headnote.ilike.%${query}%`)
                 .limit(20);
 
-            if(error || data.length === 0) {
-                resultsDiv.innerHTML = '<div class="alert alert-light text-center mt-4">No cases found matching your query.</div>';
+            if (error) {
+                console.error("Supabase Error:", error); // কনসোলে এরর দেখাবে
+                resultsDiv.innerHTML = `<div class="alert alert-danger text-center mt-4">Database Error: ${error.message}</div>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                resultsDiv.innerHTML = '<div class="alert alert-light text-center mt-4">No cases found. Try searching "75 DLR".</div>';
                 return;
             }
 
@@ -143,7 +160,7 @@
             data.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'result-item';
-                div.onclick = () => loadJudgment(item); // ক্লিক করলে পড়া শুরু
+                div.onclick = () => loadJudgment(item);
                 div.innerHTML = `
                     <div class="case-header">${item.title}</div>
                     <div class="meta-info">
@@ -152,7 +169,7 @@
                         <span class="badge bg-secondary text-light">${item.citation || 'Unreported'}</span>
                         ${item.is_premium ? '<span class="text-danger ms-2"><i class="fas fa-lock"></i> Premium</span>' : ''}
                     </div>
-                    <div class="snippet">${item.headnote.substring(0, 200)}...</div>
+                    <div class="snippet">${item.headnote ? item.headnote.substring(0, 200) : ''}...</div>
                 `;
                 resultsDiv.appendChild(div);
             });
@@ -160,31 +177,31 @@
 
         // জাজমেন্ট লোড করার ফাংশন
         async function loadJudgment(item) {
-            // প্রিমিয়াম চেক
             if(item.is_premium && !currentUser) {
                 alert("🔒 This case is Premium. Please Login to read full text.");
                 login();
                 return;
             }
 
-            document.getElementById('resultsArea').innerHTML = ''; // রেজাল্ট লুকানো
+            document.getElementById('resultsArea').innerHTML = '';
             const viewer = document.getElementById('readerView');
             viewer.style.display = 'block';
             viewer.innerHTML = '<div class="text-center">Fetching from Archive...</div>';
 
-            // গিটহাব থেকে টেক্সট আনা
             const url = `https://raw.githubusercontent.com/${githubUser}/${repoName}/main/judgments/${item.github_filename}`;
+            console.log("Fetching URL:", url);
 
             try {
                 const response = await fetch(url);
+                if (!response.ok) throw new Error("GitHub file not found (404)");
                 const fullText = await response.text();
 
-                // ===MARKER=== দিয়ে কাটা
+                // মার্কার লজিক
                 const startMarker = `===${item.case_anchor}===`;
                 const endMarker = `===End===`;
 
                 const sIndex = fullText.indexOf(startMarker);
-                let content = "Judgment content marker not found in file.";
+                let content = "Judgment content marker not found in file. Please check 'case_anchor' in database.";
 
                 if (sIndex !== -1) {
                     const eIndex = fullText.indexOf(endMarker, sIndex);
@@ -206,10 +223,12 @@
                 `;
 
             } catch (err) {
-                viewer.innerHTML = '<div class="alert alert-danger">Network Error: Could not load file.</div>';
+                console.error(err);
+                viewer.innerHTML = `<div class="alert alert-danger">Error loading file: ${err.message}</div>`;
             }
         }
     </script>
 </body>
 
 </html>
+
