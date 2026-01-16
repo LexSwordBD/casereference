@@ -36,7 +36,7 @@
         .hero-title { font-size: 38px; font-weight: 700; margin-bottom: 10px; }
         .hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 30px; }
 
-        /* সার্চ বার (ফিক্সড) */
+        /* সার্চ বার */
         .search-container { max-width: 750px; margin: 0 auto; position: relative; }
         .search-wrapper {
             background: #fff; border-radius: 50px; padding: 5px 5px 5px 25px;
@@ -66,11 +66,7 @@
         .feature-icon { font-size: 28px; color: var(--accent-color); margin-bottom: 10px; }
 
         /* রেজাল্ট কার্ড */
-        .result-card { 
-            background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; 
-            border-left: 5px solid var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-            cursor: pointer;
-        }
+        .result-card { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid var(--accent-color); box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
         .headnote-text { 
             text-align: justify; font-size: 15px; line-height: 1.7; color: #2c3e50; margin-top: 15px;
             white-space: pre-wrap; font-family: 'Times New Roman', serif;
@@ -80,7 +76,6 @@
         /* প্যাকেজ এবং অন্যান্য */
         .packages-section { padding: 50px 15px; }
         .package-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); margin-bottom: 20px; transition: 0.3s; }
-        .package-card:hover { transform: translateY(-5px); border: 1px solid var(--accent-color); }
         .btn-pay { display: block; width: 100%; background: var(--text-dark); color: white; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 15px; }
 
         footer { background: #222; color: #bbb; padding: 40px 0; font-size: 14px; }
@@ -92,6 +87,18 @@
         .form-label { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 5px; padding: 10px; }
         .btn-close-white { filter: invert(1); }
+
+        /* প্রিন্ট এবং বুকমার্ক বাটন স্টাইল */
+        .action-bar { display: flex; gap: 10px; }
+        .btn-action { border-radius: 50px; font-size: 13px; font-weight: 600; padding: 6px 15px; display: flex; align-items: center; gap: 5px; }
+        
+        /* প্রিন্ট করার সময় শুধু জাজমেন্ট দেখাবে */
+        @media print {
+            body * { visibility: hidden; }
+            #readerView, #readerView * { visibility: visible; }
+            #readerView { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; box-shadow: none; }
+            .no-print { display: none !important; }
+        }
 
         @media (max-width: 768px) {
             .hero-title { font-size: 28px; }
@@ -115,6 +122,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center mt-3 mt-lg-0">
                     <li class="nav-item"><a class="nav-link nav-link-close" href="#" onclick="resetHome()">হোম</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-close" href="#" onclick="showMyBookmarks()">বুকমার্ক</a></li>
                     <li class="nav-item"><a class="nav-link nav-link-close" href="#packages">প্যাকেজ</a></li>
                     <li class="nav-item"><a class="nav-link nav-link-close" href="#contact">যোগাযোগ</a></li>
                     <li class="nav-item ms-lg-2 mt-2 mt-lg-0" id="authDiv"></li>
@@ -175,6 +183,12 @@
     <div class="container mt-4">
         <div id="resultsArea"></div>
         <div id="readerView" class="p-4 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px; font-family: 'Times New Roman', serif;"></div>
+        
+        <div id="bookmarkArea" style="display:none;" class="mb-5">
+            <h4 class="mb-4 border-bottom pb-2"><i class="fas fa-bookmark text-warning"></i> My Bookmarks</h4>
+            <div id="bookmarkList"></div>
+        </div>
+
         <div id="paywallMsg" class="text-center py-5 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px;">
             <i class="fas fa-crown fa-3x text-warning mb-3"></i>
             <h3>Premium Access Required</h3>
@@ -251,7 +265,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 text-center">
-                    <p class="text-muted mb-3">আপনার ইমেইল এড্রেস দিয়ে লগইন করুন। আমরা আপনাকে একটি ম্যাজিক লিংক পাঠাবো।</p>
+                    <p class="text-muted mb-3">আপনার ইমেইল এড্রেস দিয়ে লগইন করুন।</p>
                     <input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com">
                     <button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button>
                 </div>
@@ -263,12 +277,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center p-5">
                 <div class="modal-body">
-                    <div class="mb-4">
-                        <i class="fas fa-paper-plane fa-4x text-success"></i>
-                    </div>
+                    <i class="fas fa-paper-plane fa-4x text-success mb-4"></i>
                     <h3 class="fw-bold mb-2">Check Your Email</h3>
-                    <p class="text-muted">আমরা আপনার ইমেইলে একটি লগইন লিংক পাঠিয়েছি। দয়া করে ইনবক্স (এবং স্প্যাম ফোল্ডার) চেক করুন।</p>
-                    <button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK, I Will Check</button>
+                    <p class="text-muted">আপনার ইমেইলে লগইন লিংক পাঠানো হয়েছে।</p>
+                    <button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -283,7 +295,7 @@
                 </div>
                 <div class="modal-body p-4 text-center">
                     <p class="lead">এটি একটি <strong>Premium</strong> জাজমেন্ট।</p>
-                    <p class="text-muted mb-4">পুরো রায় পড়ার জন্য আপনাকে লগইন করতে হবে।</p>
+                    <p class="text-muted mb-4">পড়ার জন্য আপনাকে লগইন করতে হবে।</p>
                     <button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button>
                 </div>
             </div>
@@ -301,16 +313,14 @@
                     <form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST">
                         <input type="hidden" name="_captcha" value="false">
                         <input type="hidden" name="_subject" value="New Payment Request">
-                        <input type="hidden" name="_template" value="table">
-                        <div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required></div>
-                        <div class="mb-3"><label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর</label><input type="text" name="Phone" class="form-control" placeholder="017XXXXXXXX" required></div>
-                        <div class="mb-3"><label class="form-label">লগইন ইমেইল</label><input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required></div>
+                        <div class="mb-3"><label class="form-label">আপনার নাম</label><input type="text" name="Name" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">মোবাইল</label><input type="text" name="Phone" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">ইমেইল</label><input type="email" name="Email" class="form-control" required></div>
                         <div class="row">
-                            <div class="col-md-6 mb-3"><label class="form-label">Transaction ID (TrxID)</label><input type="text" name="TrxID" class="form-control" placeholder="TXN123456" required></div>
-                            <div class="col-md-6 mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select" required><option value="Monthly (199)">মাসিক (১৯৯৳)</option><option value="Quarterly (499)">ত্রৈমাসিক (৪৯৯৳)</option><option value="Half-Yearly (700)">ষান্মাসিক (৭০০৳)</option><option value="Yearly (1200)">বার্ষিক (১২০০৳)</option></select></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">TrxID</label><input type="text" name="TrxID" class="form-control" required></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">প্যাকেজ</label><select name="Package" class="form-select" required><option>Monthly</option><option>Yearly</option></select></div>
                         </div>
                         <div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-lg">সাবমিট করুন</button></div>
-                        <p class="text-muted small text-center mt-2">তথ্যগুলো আমাদের ইমেইলে পাঠানো হবে।</p>
                     </form>
                 </div>
             </div>
@@ -365,34 +375,20 @@
         }
         checkAuth();
 
-        // নতুন লগইন ফাংশন (মডাল ওপেন করে)
         function openLoginModal() {
-            document.getElementById('loginEmailInput').value = ''; // আগের ইনপুট ক্লিয়ার
+            document.getElementById('loginEmailInput').value = '';
             new bootstrap.Modal(document.getElementById('loginModal')).show();
         }
 
-        // মডাল থেকে সাবমিট করার ফাংশন
         async function submitLogin() {
             const email = document.getElementById('loginEmailInput').value;
-            if(!email) {
-                alert("Please enter a valid email."); // সিম্পল ভ্যালিডেশন
-                return;
-            }
-            
-            // লগইন মডাল বন্ধ করা
+            if(!email) { alert("Please enter email."); return; }
             bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-
             const { error } = await _supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: siteLink } });
-            
-            if(!error) {
-                // সফল হলে সুন্দর নোটিফিকেশন মডাল দেখানো
-                new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
-            } else {
-                alert("Error: " + error.message);
-            }
+            if(!error) new bootstrap.Modal(document.getElementById('checkEmailModal')).show();
+            else alert("Error: " + error.message);
         }
 
-        // ওয়ার্নিং মডাল থেকে লগইন পেজে যাওয়া
         function triggerLoginFromModal() {
             bootstrap.Modal.getInstance(document.getElementById('premiumWarningModal')).hide();
             openLoginModal();
@@ -414,12 +410,14 @@
         function showSection(sec) { 
             document.getElementById('packages').style.display = 'block'; 
             document.getElementById('featuresSection').style.display = 'block';
+            document.getElementById('bookmarkArea').style.display = 'none';
             document.getElementById('homeSection').scrollIntoView({behavior: 'smooth'}); 
         }
 
         async function performSearch(type) {
             const resultsDiv = document.getElementById('resultsArea');
             document.getElementById('readerView').style.display = 'none';
+            document.getElementById('bookmarkArea').style.display = 'none';
             document.getElementById('paywallMsg').style.display = 'none';
             document.getElementById('packages').style.display = 'none';
             document.getElementById('featuresSection').style.display = 'none';
@@ -440,20 +438,13 @@
                 const vol = document.getElementById('advVol').value;
                 const div = document.getElementById('advDiv').value;
                 const pg = document.getElementById('advPage').value;
-                
                 if (!jour || !vol || !div || !pg) { 
-                    alert("Advanced Search-এর জন্য সব ঘর (Journal, Vol, Division, Page) পূরণ করা বাধ্যতামূলক।");
+                    alert("Advanced Search-এর জন্য সব ঘর পূরণ বাধ্যতামূলক।");
                     resultsDiv.innerHTML = "";
                     document.getElementById('featuresSection').style.display = 'block';
                     return; 
                 }
-                
-                queryBuilder = queryBuilder
-                    .eq('journal', jour)
-                    .eq('volume', vol)
-                    .eq('division', div)
-                    .eq('page_number', pg);
-                    
+                queryBuilder = queryBuilder.eq('journal', jour).eq('volume', vol).eq('division', div).eq('page_number', pg);
                 highlightTerm = `${jour} ${vol} ${pg}`;
             } else {
                 const text = document.getElementById('searchInput').value;
@@ -495,11 +486,7 @@
         }
 
         async function loadJudgment(item) {
-            // ১. লগইন না থাকলে ওয়ার্নিং মডাল দেখানো
-            if (item.is_premium && !currentUser) { 
-                new bootstrap.Modal(document.getElementById('premiumWarningModal')).show();
-                return; 
-            }
+            if (item.is_premium && !currentUser) { new bootstrap.Modal(document.getElementById('premiumWarningModal')).show(); return; }
             if (item.is_premium && !subStatus) { 
                 document.getElementById('resultsArea').innerHTML = '';
                 document.getElementById('paywallMsg').style.display = 'block';
@@ -507,6 +494,7 @@
                 return; 
             }
             document.getElementById('resultsArea').innerHTML = '';
+            document.getElementById('bookmarkArea').style.display = 'none';
             const viewer = document.getElementById('readerView');
             viewer.style.display = 'block';
             viewer.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-secondary"></div></div>';
@@ -523,13 +511,65 @@
                 const searchTerm = document.getElementById('searchInput').value;
                 if(searchTerm) content = highlightText(content, searchTerm);
 
+                // জাজমেন্ট ভিউয়ার (প্রিন্ট ও বুকমার্ক বাটন সহ)
                 viewer.innerHTML = `
-                    <button class="btn btn-light btn-sm mb-3 border" onclick="location.reload()"><i class="fas fa-arrow-left"></i> Back</button>
+                    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                        <button class="btn btn-light btn-sm border" onclick="location.reload()"><i class="fas fa-arrow-left"></i> Back</button>
+                        <div class="d-flex gap-2">
+                            <button class="btn-action btn-outline-warning text-dark border" onclick="toggleBookmark('${item.title}', '${item.citation}', '${item.case_anchor}', '${item.github_filename}')">
+                                <i class="far fa-bookmark"></i> Save
+                            </button>
+                            <button class="btn-action btn-outline-secondary border" onclick="window.print()">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </div>
+                    </div>
                     <h4 class="text-center fw-bold" style="color:#1a237e">${item.title}</h4>
                     <p class="text-center text-muted fw-bold border-bottom pb-3">${item.citation}</p>
                     <div class="mt-4" style="text-align: justify; font-size:18px; line-height:1.8; white-space: pre-wrap;">${content}</div>
                 `;
             } catch (e) { viewer.innerHTML = "Error loading judgment."; }
+        }
+
+        // বুকমার্ক লজিক
+        async function toggleBookmark(title, citation, anchor, file) {
+            if(!currentUser) { alert("Please Login to bookmark."); return; }
+            const { data, error } = await _supabase.from('bookmarks').insert([
+                { email: currentUser.email, case_title: title, case_citation: citation, case_anchor: anchor, github_filename: file }
+            ]);
+            if(error) alert("Already saved or error!");
+            else alert("Bookmark Saved!");
+        }
+
+        async function showMyBookmarks() {
+            if(!currentUser) { openLoginModal(); return; }
+            
+            document.getElementById('homeSection').style.padding = "20px 0";
+            document.getElementById('featuresSection').style.display = 'none';
+            document.getElementById('packages').style.display = 'none';
+            document.getElementById('resultsArea').innerHTML = "";
+            document.getElementById('readerView').style.display = "none";
+            const bmArea = document.getElementById('bookmarkArea');
+            bmArea.style.display = 'block';
+            
+            const list = document.getElementById('bookmarkList');
+            list.innerHTML = '<div class="text-center"><div class="spinner-border"></div></div>';
+
+            const { data, error } = await _supabase.from('bookmarks').select('*').eq('email', currentUser.email);
+            
+            if(!data || data.length === 0) {
+                list.innerHTML = '<div class="alert alert-secondary">No bookmarks found.</div>';
+                return;
+            }
+
+            list.innerHTML = "";
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.onclick = () => loadJudgment({title: item.case_title, citation: item.case_citation, case_anchor: item.case_anchor, github_filename: item.github_filename, is_premium: true});
+                div.innerHTML = `<h6>${item.case_title}</h6><span class="badge bg-secondary">${item.case_citation}</span>`;
+                list.appendChild(div);
+            });
         }
     </script>
 </body>
