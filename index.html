@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CaseReference | Intelligent Legal Research</title>
+    <title>CaseReference | Smart Legal Research</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* --- PREMIUM TYPOGRAPHY & VARIABLES --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap');
         
         :root {
-            --primary: #0f172a;       
-            --accent: #2563eb;        
-            --bg-body: #f1f5f9;       
-            --surface: #ffffff;       
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
             --text-main: #1e293b;
             --text-light: #64748b;
         }
@@ -29,211 +28,151 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, .brand-font { font-family: 'Playfair Display', serif; }
-
-        /* --- NAVBAR --- */
-        .navbar {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding: 12px 0;
-            transition: 0.3s;
-        }
-        .navbar-brand { font-size: 24px; font-weight: 700; color: var(--primary) !important; letter-spacing: -0.5px; }
+        /* Navbar */
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 15px 0; transition: 0.3s; }
+        .navbar-brand { font-size: 26px; font-weight: 700; color: var(--primary) !important; font-family: 'Playfair Display', serif; }
+        .navbar-brand span { color: var(--accent); }
         .nav-link { font-weight: 500; color: var(--text-main); font-size: 14px; margin: 0 10px; transition: 0.3s; }
         .nav-link:hover { color: var(--accent); }
-        
-        .btn-app {
-            background: #e2e8f0; color: var(--text-main); border-radius: 50px;
-            padding: 8px 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; text-decoration: none;
-        }
-        .btn-app:hover { background: var(--text-main); color: white; }
+        .btn-app { background: var(--text-main); color: white; border-radius: 50px; padding: 8px 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; text-decoration: none; }
+        .btn-app:hover { background: var(--accent); color: white; }
 
-        /* --- HERO SECTION (Collapsible) --- */
+        /* Hero Section (Collapsible) */
         .hero-section {
-            min-height: 85vh;
+            min-height: 80vh; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #e2e8f0 100%);
-            padding: 20px;
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f1f5f9 100%);
+            padding: 20px; transition: all 0.5s ease-in-out;
         }
         
-        /* Class to shrink hero after search */
-        .hero-section.shrunk {
-            min-height: 20vh;
+        /* Shrunk State */
+        .hero-section.hero-shrunk {
+            min-height: auto;
             padding-top: 100px;
             padding-bottom: 30px;
-            background: #fff;
-            border-bottom: 1px solid #eee;
         }
-        .hero-section.shrunk .hero-title, 
-        .hero-section.shrunk .hero-subtitle {
+        .hero-section.hero-shrunk .hero-title,
+        .hero-section.hero-shrunk .hero-subtitle {
             display: none;
         }
 
-        .hero-content { text-align: center; width: 100%; max-width: 850px; z-index: 2; }
-        .hero-title { font-size: 42px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
-        .hero-subtitle { font-size: 16px; color: var(--text-light); margin-bottom: 40px; }
+        .hero-content { text-align: center; width: 100%; max-width: 900px; z-index: 2; }
+        .hero-title { font-size: 48px; font-weight: 700; color: var(--primary); margin-bottom: 15px; font-family: 'Playfair Display', serif; }
+        .hero-subtitle { font-size: 18px; color: var(--text-light); margin-bottom: 40px; }
 
-        /* --- UNIFIED SEARCH BAR --- */
+        /* Search Bar */
         .search-container-box {
-            background: var(--surface);
-            padding: 8px;
-            border-radius: 50px;
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            gap: 0; /* Gap 0 to merge visuals */
-            transition: 0.3s;
+            background: var(--surface); padding: 10px; border-radius: 50px;
+            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
         }
-        .search-container-box:focus-within {
-            box-shadow: 0 15px 50px -10px rgba(37, 99, 235, 0.2);
-            border-color: var(--accent);
-        }
-
-        /* Law Filter Input */
-        .law-select-wrapper {
-            position: relative;
-            width: 35%;
-            border-right: 1px solid #eee;
-            padding-left: 10px;
-        }
-        .law-input {
-            width: 100%; border: none; font-size: 14px; font-weight: 500; color: var(--primary);
-            background: transparent; outline: none; padding: 12px; cursor: pointer;
-            font-family: 'Inter', 'Hind Siliguri', sans-serif;
-        }
-
-        /* Main Search Input */
-        .main-input {
-            width: 55%; border: none; font-size: 15px; outline: none; color: var(--text-main); padding: 12px 15px;
-            background: transparent; font-family: 'Inter', 'Hind Siliguri', sans-serif;
-        }
-
-        /* Search Button */
+        .law-select-wrapper { position: relative; min-width: 250px; border-right: 1px solid #eee; padding-right: 10px; }
+        .law-input { width: 100%; border: none; font-size: 14px; font-weight: 600; color: var(--primary); background: transparent; outline: none; padding: 10px 20px; }
+        .main-input { flex-grow: 1; border: none; font-size: 16px; outline: none; color: var(--text-main); padding: 10px; background: transparent; }
+        
         .btn-search-hero {
             background: var(--accent); color: white; border: none;
-            width: 45px; height: 45px; border-radius: 50%;
-            font-size: 16px; transition: 0.3s; cursor: pointer; margin-right: 5px;
-            display: flex; align-items: center; justify-content: center;
+            width: 50px; height: 50px; border-radius: 50%; font-size: 18px; transition: 0.3s;
         }
-        .btn-search-hero:hover { background: #1d4ed8; transform: scale(1.05); }
+        
+        /* Advanced Panel */
+        .adv-search-panel { display: none; background: #fff; border-radius: 12px; padding: 25px; margin-top: 15px; text-align: left; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
-        /* Advanced Options */
-        .search-options { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 13px; color: var(--text-light); }
-        .adv-search-panel { display: none; background: #fff; border-radius: 12px; padding: 25px; margin-top: 15px; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        /* Features */
+        .features-section { padding: 40px 15px; margin-top: 20px; }
+        .feature-icon { font-size: 24px; color: var(--accent); margin-bottom: 10px; }
 
-        /* --- RESULTS (List View) --- */
+        /* Result List */
         .result-item {
-            background: var(--surface); border: 1px solid #e2e8f0;
-            padding: 30px; border-radius: 12px;
-            margin-bottom: 20px; transition: 0.2s; position: relative;
-            cursor: pointer;
+            background: var(--surface); border: 1px solid #f1f5f9; padding: 25px; border-radius: 12px;
+            margin-bottom: 15px; transition: 0.2s; cursor: pointer;
         }
-        .result-item:hover { border-color: var(--accent); box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .result-item h5 { color: var(--accent); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; margin-bottom: 10px; }
-        
-        /* Full Headnote Display */
-        .headnote-text { 
-            font-size: 16px; color: #334155; line-height: 1.8; margin-top: 15px;
-            white-space: pre-wrap; font-family: 'Hind Siliguri', serif;
-            text-align: justify;
-        }
-        .highlight { background-color: #fef08a; padding: 2px 4px; border-radius: 3px; font-weight: bold; }
-        .tag-cite { background: #eff6ff; color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .result-item:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .result-item h5 { color: var(--accent); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; }
+        .headnote-text { text-align: justify; font-size: 15px; line-height: 1.7; color: #475569; margin-top: 10px; white-space: pre-wrap; }
+        .highlight { background-color: #fef08a; padding: 0 2px; border-radius: 2px; }
 
-        /* --- PRICING SECTION (Matches Your Screenshot) --- */
-        .packages-section { padding: 80px 15px; background: #fff; }
-        .pricing-header { text-align: center; margin-bottom: 50px; }
-        .pricing-header h2 { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--text-dark); }
-        
+        /* Pricing (Screenshot Style) */
+        .packages-section { padding: 60px 15px; background: #fff; }
         .pricing-card {
-            background: #f8fafc; border-radius: 16px; padding: 40px 20px; text-align: center;
-            border: 1px solid transparent; transition: 0.3s; position: relative;
+            background: #f8fafc; /* Light Grayish */
+            padding: 40px 30px; border-radius: 20px; text-align: center;
+            border: 1px solid transparent; transition: 0.3s; position: relative; overflow: hidden;
         }
-        /* Best Value Card Style */
-        .pricing-card.best-value {
-            background: #fff;
+        .pricing-card.popular {
+            background: #ffffff;
             border: 2px solid var(--accent);
             box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
-            transform: scale(1.05); z-index: 2;
         }
-        .badge-best {
-            position: absolute; top: 0; right: 0; background: var(--accent); color: white;
-            padding: 5px 15px; font-size: 10px; font-weight: 700; text-transform: uppercase;
-            border-bottom-left-radius: 10px;
+        .best-value-badge {
+            position: absolute; top: 20px; right: -35px; background: var(--accent); color: white;
+            padding: 5px 40px; transform: rotate(45deg); font-size: 10px; font-weight: bold; letter-spacing: 1px;
         }
-        .plan-name { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; }
-        .plan-price { font-size: 36px; font-weight: 700; color: var(--text-dark); font-family: 'Inter', sans-serif; }
-        .billing-cycle { font-size: 13px; color: var(--text-light); margin-bottom: 25px; }
-        
-        .btn-pricing {
-            display: inline-block; width: 100%; padding: 12px; border-radius: 8px;
-            font-weight: 600; font-size: 14px; text-decoration: none; margin-top: 15px; transition: 0.3s;
+        .plan-name { font-size: 18px; font-weight: 600; color: var(--text-light); margin-bottom: 10px; }
+        .plan-price { font-size: 42px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; }
+        .plan-desc { font-size: 14px; color: #94a3b8; margin-bottom: 30px; }
+        .btn-plan {
+            display: block; width: 100%; padding: 12px; border-radius: 8px; font-weight: 600;
+            background: var(--primary); color: white; text-decoration: none; transition: 0.3s;
         }
-        .btn-pricing.basic { background: #e2e8f0; color: var(--text-dark); }
-        .btn-pricing.basic:hover { background: #cbd5e1; }
-        .btn-pricing.primary { background: var(--text-dark); color: white; }
-        .btn-pricing.primary:hover { background: var(--primary); }
-
-        /* Pagination */
-        .pagination { justify-content: center; margin-top: 40px; padding-bottom: 40px; }
-        .page-link { color: var(--text-dark); border: none; margin: 0 5px; border-radius: 5px; font-weight: 600; }
-        .page-item.active .page-link { background-color: var(--accent); color: white; }
+        .btn-plan:hover { background: var(--accent); }
+        .pricing-card:not(.popular) .btn-plan { background: #e2e8f0; color: var(--text-main); }
+        .pricing-card:not(.popular) .btn-plan:hover { background: #cbd5e1; }
 
         /* Footer */
-        footer { background: #1e293b; color: #94a3b8; padding: 60px 0; font-size: 14px; margin-top: 50px; }
-        footer h5 { color: white; margin-bottom: 20px; }
-        .footer-link { color: #94a3b8; text-decoration: none; margin: 0 10px; }
+        footer { background: #111; color: #888; padding: 60px 0; font-size: 14px; text-align: center; }
+        .footer-link { color: #888; text-decoration: none; margin: 0 10px; transition: 0.3s; }
         .footer-link:hover { color: white; }
 
-        /* --- MOBILE OPTIMIZATION --- */
+        /* Mobile Tweaks */
         @media (max-width: 768px) {
-            .hero-section { padding-top: 100px; padding-bottom: 40px; }
-            .hero-title { font-size: 30px; }
-            
+            .hero-title { font-size: 32px; }
+            .hero-section { min-height: auto; padding-top: 100px; padding-bottom: 50px; }
             /* Mobile Search Box Separation */
-            .search-container-box {
-                flex-direction: column;
-                background: transparent;
-                box-shadow: none;
-                border: none;
-                padding: 0;
+            .search-container-box { 
+                background: transparent; box-shadow: none; border: none; 
+                flex-direction: column; padding: 0; align-items: stretch; gap: 15px; 
             }
-            .law-select-wrapper {
-                width: 100%; border: none; margin-bottom: 10px;
-                background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            .law-select-wrapper { 
+                background: white; border-radius: 50px; border: 1px solid #e2e8f0; 
+                padding: 5px 15px; width: 100%; 
             }
-            .main-input {
-                width: 100%; margin-bottom: 10px;
-                background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            .main-input { 
+                background: white; border-radius: 50px; border: 1px solid #e2e8f0; 
+                padding: 15px 20px; width: 100%; 
             }
-            .btn-search-hero {
-                width: 100%; border-radius: 12px;
-            }
-            
-            .pricing-card.best-value { transform: scale(1); margin: 20px 0; }
+            .btn-search-hero { width: 100%; border-radius: 50px; }
+            .col-6 { padding: 5px; }
         }
+        
+        .whatsapp-float { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; line-height: 60px; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
+        
+        /* Modals & Forms */
+        .modal-content { border-radius: 15px; border: none; }
+        .modal-header { background: var(--primary); color: white; }
+        .form-control, .form-select { padding: 12px; border-radius: 8px; font-size: 15px; }
+        .pagination { justify-content: center; margin-top: 30px; padding-bottom: 50px; }
+        .page-link { color: var(--text-dark); border: none; margin: 0 5px; border-radius: 5px; font-weight: 600; }
+        .page-link.active { background-color: var(--accent); color: white; }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand brand-font" href="#" onclick="location.reload()">Case<span>Reference</span></a>
+            <a class="navbar-brand" href="#" onclick="location.reload()">Case<span>Reference</span></a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="resetHome()">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" onclick="showMyBookmarks()">Bookmarks</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#packages">Pricing</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item ms-lg-2">
-                        <a class="btn-app" href="#" data-bs-toggle="modal" data-bs-target="#appModal">
-                            <i class="fas fa-robot"></i> Get App
+                    <li class="nav-item"><a class="nav-link nav-link-close" href="#" onclick="resetHome()">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-close" href="#" onclick="showMyBookmarks()">Bookmarks</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-close" href="#packages">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-close" href="#contact">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="btn-app ms-lg-3 mt-3 mt-lg-0" href="#" data-bs-toggle="modal" data-bs-target="#appModal">
+                            <i class="fab fa-android"></i> Get App
                         </a>
                     </li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0" id="authDiv"></li>
@@ -244,156 +183,190 @@
 
     <div class="hero-section" id="homeSection">
         <div class="hero-content">
-            <h1 class="hero-title">The Legal Intelligence.</h1>
-            <p class="hero-subtitle">Comprehensive database of Supreme Court judgments.</p>
+            <h1 class="hero-title">Intelligent Legal Research.</h1>
+            <p class="hero-subtitle">Search over 50,000+ judgments from the Supreme Court of Bangladesh.</p>
             
             <div class="search-container">
                 <div class="search-container-box">
                     <div class="law-select-wrapper">
-                        <input class="law-input" list="lawList" id="lawFilterInput" placeholder="Select Law (e.g. Penal Code)" onchange="triggerSearch(1)">
+                        <input class="law-input" list="lawList" id="lawFilterInput" placeholder="Select Law (e.g. Penal Code)">
                         <datalist id="lawList">
                             <option value="Constitution of Bangladesh (সংবিধান)">
-                            <option value="Code of Civil Procedure (CPC)">
-                            <option value="Code of Criminal Procedure (CrPC)">
+                            <option value="Code of Civil Procedure (CPC/দেওয়ানী)">
+                            <option value="Code of Criminal Procedure (CrPC/ফৌজদারী)">
                             <option value="Penal Code (দণ্ডবিধি)">
                             <option value="Evidence Act (সাক্ষ্য আইন)">
-                            <option value="Specific Relief Act">
-                            <option value="Limitation Act">
-                            <option value="Nari O Shishu Nirjatan Daman Ain">
-                            <option value="Artha Rin Adalat Ain">
-                            <option value="Digital Security Act">
-                            <option value="Narcotics Control Act">
-                            <option value="Labor Act">
+                            <option value="Specific Relief Act (সুনির্দিষ্ট প্রতিকার)">
+                            <option value="Limitation Act (তামাদি আইন)">
+                            <option value="Nari O Shishu Nirjatan Daman Ain (নারী ও শিশু)">
+                            <option value="Artha Rin Adalat Ain (অর্থ ঋণ)">
+                            <option value="Digital Security Act (ডিজিটাল নিরাপত্তা)">
+                            <option value="Labor Act (শ্রম আইন)">
+                            <option value="Narcotics Control Act (মাদক)">
                             <option value="Negotiable Instruments Act (NI Act)">
                             <option value="Transfer of Property Act">
-                            <option value="Registration Act">
                             <option value="Family Courts Ordinance">
-                            <option value="Muslim Family Laws">
-                            <option value="Special Powers Act">
-                            <option value="Anti-Terrorism Act">
-                            <option value="Arms Act">
-                            <option value="Mobile Court Act">
-                            <option value="VAT Act">
-                            <option value="Income Tax Ordinance">
                         </datalist>
                     </div>
 
-                    <input type="text" id="searchInput" class="main-input" maxlength="80" placeholder="Search keywords, citations...">
+                    <input type="text" id="searchInput" class="main-input" maxlength="100" placeholder="Search keywords, citations, or case names...">
                     
-                    <button class="btn btn-light rounded-circle ms-2" onclick="toggleAdvSearch()" style="width:40px;height:40px;"><i class="fas fa-sliders-h"></i></button>
-                    <button class="btn-search-hero ms-2" onclick="triggerSearch(1)"><i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-link text-secondary" onclick="toggleAdvSearch()" title="Advanced Filters"><i class="fas fa-sliders-h"></i></button>
+                    <button class="btn-search-hero" onclick="triggerSearch(1)"><i class="fas fa-arrow-right"></i></button>
                 </div>
 
-                <div class="search-options">
-                    <label style="cursor:pointer;"><input type="checkbox" id="exactMatchToggle"> Exact Phrase Match</label>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <label class="small text-secondary" style="cursor:pointer;">
+                        <input type="checkbox" id="exactMatchToggle"> Exact Phrase Match
+                    </label>
                 </div>
 
                 <div class="adv-search-panel" id="advSearchForm">
-                    <h6 class="text-secondary small fw-bold mb-3">CITATION SEARCH</h6>
+                    <h6 class="small fw-bold text-uppercase text-secondary mb-3">Citation Search</h6>
                     <div class="row g-2">
                         <div class="col-6 col-md-3"><select id="advJournal" class="form-select form-select-sm"><option value="">Journal</option><option>DLR</option><option>BLD</option><option>ADC</option><option>MLR</option><option>BLC</option></select></div>
                         <div class="col-6 col-md-2"><input type="text" id="advVol" class="form-control form-control-sm" placeholder="Vol"></div>
-                        <div class="col-6 col-md-3"><select id="advDiv" class="form-select form-select-sm"><option value="">Div</option><option>AD</option><option>HCD</option></select></div>
+                        <div class="col-6 col-md-3"><select id="advDiv" class="form-select form-select-sm"><option value="">Division</option><option>AD</option><option>HCD</option></select></div>
                         <div class="col-6 col-md-2"><input type="text" id="advPage" class="form-control form-control-sm" placeholder="Page"></div>
-                        <div class="col-12 col-md-2"><button class="btn btn-dark btn-sm w-100" onclick="triggerSearch(1, 'advanced')">Find</button></div>
+                        <div class="col-12 col-md-2"><button class="btn btn-dark btn-sm w-100" onclick="triggerSearch(1, 'advanced')">Go</button></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container" style="min-height: 500px;">
+    <div class="container" style="min-height: 400px;">
         <div id="resultsArea"></div>
         <nav id="paginationNav" style="display:none;"><ul class="pagination" id="paginationList"></ul></nav>
         
         <div id="readerView" class="bg-white p-4 p-md-5 rounded-3 shadow-sm border mb-5" style="display:none;"></div>
-        <div id="bookmarkArea" style="display:none;" class="mb-5"><h3 class="mb-4 brand-font">My Bookmarks</h3><div id="bookmarkList"></div></div>
+        <div id="bookmarkArea" style="display:none;" class="mb-5"><h3 class="mb-4">My Bookmarks</h3><div id="bookmarkList"></div></div>
 
+        <div id="featuresSection" class="py-5">
+            <div class="row g-4 justify-content-center text-center">
+                <div class="col-6 col-md-3"><i class="fas fa-bolt fa-2x text-warning mb-3"></i><h6 class="fw-bold">Fast Search</h6></div>
+                <div class="col-6 col-md-3"><i class="fas fa-book fa-2x text-primary mb-3"></i><h6 class="fw-bold">All Laws</h6></div>
+                <div class="col-6 col-md-3"><i class="fas fa-mobile-alt fa-2x text-success mb-3"></i><h6 class="fw-bold">Mobile First</h6></div>
+                <div class="col-6 col-md-3"><i class="fas fa-headset fa-2x text-secondary mb-3"></i><h6 class="fw-bold">24/7 Support</h6></div>
+            </div>
+        </div>
+        
         <div id="paywallMsg" class="text-center py-5 bg-white rounded shadow-sm border" style="display:none; margin-bottom:50px;">
             <i class="fas fa-crown fa-3x text-warning mb-3"></i>
             <h3>Premium Access Required</h3>
-            <p class="text-muted">Please subscribe to view full content.</p>
-            <a href="#packages" class="btn btn-dark rounded-pill px-5 mt-2">View Pricing</a>
+            <p class="text-muted">Please subscribe to view this judgment.</p>
+            <a href="#packages" class="btn btn-dark rounded-pill px-5 mt-2">View Plans</a>
         </div>
     </div>
 
     <div class="packages-section" id="packages">
         <div class="container">
-            <div class="pricing-header">
-                <h2>Simple, Transparent Pricing</h2>
+            <div class="text-center mb-5">
+                <h2 class="hero-title" style="font-size:32px;">Simple, Transparent Pricing</h2>
                 <p class="text-muted">Choose the plan that fits your practice.</p>
             </div>
-            <div class="row g-4 justify-content-center align-items-center">
+            <div class="row g-4 justify-content-center">
                 <div class="col-md-3 col-sm-6">
                     <div class="pricing-card">
                         <div class="plan-name">Monthly</div>
                         <div class="plan-price">199৳</div>
-                        <div class="billing-cycle">Billed monthly</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank" class="btn-pricing basic">Get Started</a>
+                        <div class="plan-desc">Billed monthly</div>
+                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt199/4NosNL" target="_blank" class="btn-plan">Get Started</a>
                     </div>
                 </div>
-                
                 <div class="col-md-3 col-sm-6">
-                    <div class="pricing-card best-value">
-                        <div class="badge-best">BEST VALUE</div>
+                    <div class="pricing-card popular">
+                        <div class="best-value-badge">BEST VALUE</div>
                         <div class="plan-name">Quarterly</div>
                         <div class="plan-price">499৳</div>
-                        <div class="billing-cycle">Save 15%</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank" class="btn-pricing primary">Get Started</a>
+                        <div class="plan-desc">Save 15%</div>
+                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt499/IxcDIa" target="_blank" class="btn-plan">Get Started</a>
                     </div>
                 </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="pricing-card">
-                        <div class="plan-name">Half-Yearly</div>
-                        <div class="plan-price">700৳</div>
-                        <div class="billing-cycle">Save 30%</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt700/LO7ESu" target="_blank" class="btn-pricing basic">Get Started</a>
-                    </div>
-                </div>
-
                 <div class="col-md-3 col-sm-6">
                     <div class="pricing-card">
                         <div class="plan-name">Yearly</div>
                         <div class="plan-price">1200৳</div>
-                        <div class="billing-cycle">Save 50%</div>
-                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank" class="btn-pricing basic">Get Started</a>
+                        <div class="plan-desc">Save 50%</div>
+                        <a href="https://shop.bkash.com/ak-jurist-law-firm01911008518/pay/bdt1200/O3FBxR" target="_blank" class="btn-plan">Get Started</a>
                     </div>
                 </div>
             </div>
-            
             <div class="text-center mt-5">
-                <button class="btn btn-dark rounded-pill px-5" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                    Already paid? Confirm here
+                <button class="btn btn-link text-secondary text-decoration-none" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                    Already paid via bKash? <span class="text-primary fw-bold">Confirm Payment</span>
                 </button>
             </div>
         </div>
     </div>
 
     <footer id="contact">
-        <div class="container text-center">
-            <h4 class="text-white mb-4 brand-font">CaseReference BD</h4>
+        <div class="container">
+            <h4 class="text-white fw-bold mb-4">CaseReference BD</h4>
             <div class="mb-4">
                 <a href="#" class="footer-link">Home</a>
-                <a href="#" class="footer-link">Privacy</a>
-                <a href="#" class="footer-link">Terms</a>
+                <a href="#packages" class="footer-link">Pricing</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
             </div>
-            <p class="mb-1 text-light">Bashundhara Riverview, Dhaka.</p>
-            <p class="mb-4 text-light">Phone: 01911 008 518 | Email: legalvoicebd@gmail.com</p>
-            <p class="small opacity-50">&copy; 2026 CaseReference. All Rights Reserved.</p>
+            <p class="mb-1">Bashundhara Riverview, Dhaka.</p>
+            <p class="mb-1">Email: legalvoicebd@gmail.com</p>
+            <p class="mb-4">Phone: 01911 008 518</p>
+            <p class="small opacity-50">&copy; 2026 CaseReference. All rights reserved.</p>
         </div>
     </footer>
 
     <a href="https://wa.me/8801911008518" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
-    <div class="modal fade" id="appModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-mobile-alt fa-3x text-success mb-3"></i><h3>Coming Soon</h3><p class="text-muted">Our Android & iOS App is under development.</p><button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button></div></div></div></div>
-    <div class="modal fade" id="advSearchGateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-check-circle fa-4x text-success mb-4"></i><h3>Judgment Found!</h3><p class="text-muted">Advanced Search is a Premium Feature.</p><button class="btn btn-dark w-100" onclick="location.href='#packages'; bootstrap.Modal.getInstance(document.getElementById('advSearchGateModal')).hide();">View Plans</button></div></div></div></div>
-    <div class="modal fade" id="loginModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Login</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><input type="email" id="loginEmailInput" class="form-control mb-3" placeholder="Enter email"><button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button></div></div></div></div>
-    <div class="modal fade" id="checkEmailModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-envelope fa-3x text-success"></i><h3>Check Email</h3><p>Login link sent.</p><button class="btn btn-outline-success" data-bs-dismiss="modal">OK</button></div></div></div></div>
-    <div class="modal fade" id="premiumWarningModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-lock fa-3x text-warning"></i><h3>Premium Only</h3><p>Please login to view.</p><button class="btn btn-dark" onclick="triggerLoginFromModal()">Login</button></div></div></div></div>
-    <div class="modal fade" id="paymentModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5>Verify Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form action="https://formsubmit.co/caseref.bd@gmail.com" method="POST"><input type="hidden" name="_captcha" value="false"><input type="text" name="Name" class="form-control mb-3" placeholder="Name" required><input type="text" name="Phone" class="form-control mb-3" placeholder="Phone" required><input type="email" name="Email" class="form-control mb-3" placeholder="Email" required><input type="text" name="TrxID" class="form-control mb-3" placeholder="TrxID" required><select name="Package" class="form-select mb-3"><option>Monthly</option><option>Quarterly</option><option>Yearly</option></select><button class="btn btn-success w-100">Submit</button></form></div></div></div></div>
-    
-    <div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="modal-body"><h4 class="mb-3">My Profile</h4><div id="profileInfo" class="mb-4"></div><button class="btn btn-outline-danger btn-sm" onclick="logout()">Sign Out</button></div></div></div></div>
+    <div class="modal fade" id="appModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-5 border-0">
+                <div class="modal-body">
+                    <i class="fas fa-android fa-4x text-success mb-3"></i>
+                    <h3 class="fw-bold">Coming Soon!</h3>
+                    <p class="text-muted mt-3">Our dedicated Android App is currently under development.</p>
+                    <button class="btn btn-light rounded-pill px-4 mt-3" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white">My Account</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center pt-4">
+                    <div id="profileInfoLoader"><div class="spinner-border text-primary"></div></div>
+                    <div id="profileContent" style="display:none;">
+                        <i class="fas fa-user-circle fa-4x text-secondary mb-3"></i>
+                        <h5 id="profileEmail" class="fw-bold mb-1"></h5>
+                        <span id="profileStatus" class="badge bg-secondary mb-3">Free Member</span>
+                        
+                        <div class="card bg-light border-0 p-3 mt-3 text-start">
+                            <p class="mb-1 small text-muted text-uppercase fw-bold">Subscription Details</p>
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span>Expiry Date:</span>
+                                <span id="profileExpiry" class="fw-bold text-dark">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Days Remaining:</span>
+                                <span id="profileDays" class="fw-bold text-primary">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-danger w-100 mt-4" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Member Login</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="text-muted mb-3">Login with your email address.</p><input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com"><button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button></div></div></div></div>
+    <div class="modal fade" id="checkEmailModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-paper-plane fa-4x text-success mb-4"></i><h3 class="fw-bold mb-2">Check Your Email</h3><p class="text-muted">We have sent a login link to your email.</p><button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK</button></div></div></div></div>
+    <div class="modal fade" id="premiumWarningModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning"><h5 class="modal-title text-dark">🔒 Login Required</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="lead">This is a <strong>Premium</strong> Judgment.</p><p class="text-muted mb-4">You need to login to read the full text.</p><button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button></div></div></div></div>
+    <div class="modal fade" id="advSearchGateModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5 border-0 shadow"><div class="modal-body"><i class="fas fa-check-circle fa-4x text-success mb-4"></i><h3 class="fw-bold text-dark">Judgment Found!</h3><p class="text-muted mt-3 mb-4">Great news! The case is in our database.<br>However, <b>Advanced Search</b> is a <b>Premium Feature</b>.</p><div class="d-grid gap-2"><button class="btn btn-dark" onclick="window.location.href='#packages'; bootstrap.Modal.getInstance(document.getElementById('advSearchGateModal')).hide();">View Plans</button><button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div></div>
+    <div class="modal fade" id="paymentModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> Payment Verification</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form action="https://formsubmit.co/caseref.bd@gmail.com" method="POST"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_subject" value="New Payment"><div class="mb-3"><label class="form-label">Name</label><input type="text" name="Name" class="form-control" required></div><div class="mb-3"><label class="form-label">Phone</label><input type="text" name="Phone" class="form-control" required></div><div class="mb-3"><label class="form-label">Email</label><input type="email" name="Email" class="form-control" required></div><div class="row"><div class="col-6 mb-3"><label class="form-label">TrxID</label><input type="text" name="TrxID" class="form-control" required></div><div class="col-6 mb-3"><label class="form-label">Plan</label><select name="Package" class="form-select"><option>Monthly</option><option>Quarterly</option><option>Yearly</option></select></div></div><button class="btn btn-success w-100 py-2">Submit</button></form></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -410,7 +383,7 @@
         const itemsPerPage = 20;
         let currentSearchType = 'simple';
 
-        // --- FULL RESTORED LOGIC ---
+        // --- RESTORED LOGIC ---
         const lawAliases = {
             'Constitution': ['Constitution', 'Konstitution', 'Art.', 'Article', 'সংবিধান'],
             'Code of Civil Procedure': ['CPC', 'Code of Civil Procedure', 'Civil Procedure Code', 'C.P.C', 'দেওয়ানী কার্যবিধি', 'Order', 'Rule'],
@@ -425,30 +398,51 @@
             'Narcotics': ['Narcotics', 'Madok', 'Drug', 'Table 9(Ka)', 'মাদক', 'Heroin', 'Yaba'],
             'Labor Act': ['Labor Act', 'Labour Act', 'Labour Law', 'Employment of Labour', 'Srom Ain', 'শ্রম আইন'],
             'Negotiable Instruments': ['Negotiable Instruments', 'NI Act', 'N.I. Act', '138', 'Dishonour of Cheque', 'চেক ডিজঅনার'],
-            'Transfer of Property': ['Transfer of Property', 'TP Act', 'T.P. Act', 'সম্পত্তি হস্তান্তর'],
-            'Registration Act': ['Registration Act', 'রেজিস্ট্রেশন']
+            'Companies Act': ['Companies Act', 'Company Law', 'Winding up', 'কোম্পানি'],
+            'Transfer of Property': ['Transfer of Property', 'TP Act', 'T.P. Act', 'সম্পত্তি হস্তান্তর']
         };
         const stopwords = ['a', 'an', 'the', 'of', 'in', 'and', 'or', 'is', 'are', 'was', 'were', 'be', 'to', 'for', 'with', 'on', 'at', 'by', 'from', 'shall', 'will', 'am'];
 
+        // --- AUTH & PROFILE ---
         async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
             const authDiv = document.getElementById('authDiv');
+            
             if (session) {
                 currentUser = session.user;
-                const { data } = await _supabase.from('members').select('*').eq('email', currentUser.email).single();
-                
-                let expiryText = "Free Member";
-                if(data && new Date(data.expiry_date) > new Date()) {
-                    subStatus = true;
-                    const daysLeft = Math.ceil((new Date(data.expiry_date) - new Date()) / (1000 * 60 * 60 * 24));
-                    expiryText = `Premium (Exp: ${new Date(data.expiry_date).toLocaleDateString()} - ${daysLeft} days left)`;
-                }
-                
+                fetchProfileData(); // Load data for modal
                 authDiv.innerHTML = `<button class="btn btn-outline-dark rounded-pill px-3 btn-sm" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="fas fa-user-circle"></i> Account</button>`;
-                document.getElementById('profileInfo').innerHTML = `<p class="fw-bold mb-1">${currentUser.email}</p><span class="badge ${subStatus ? 'bg-success' : 'bg-warning text-dark'}">${expiryText}</span>`;
             } else {
                 authDiv.innerHTML = `<button class="btn btn-dark rounded-pill px-4 btn-sm" onclick="openLoginModal()">Login</button>`;
             }
+        }
+        
+        async function fetchProfileData() {
+            const { data } = await _supabase.from('members').select('*').eq('email', currentUser.email).single();
+            const loader = document.getElementById('profileInfoLoader');
+            const content = document.getElementById('profileContent');
+            
+            if(data && new Date(data.expiry_date) > new Date()) {
+                subStatus = true;
+                const expDate = new Date(data.expiry_date);
+                const today = new Date();
+                const diffTime = Math.abs(expDate - today);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                
+                document.getElementById('profileEmail').innerText = currentUser.email;
+                document.getElementById('profileStatus').className = "badge bg-success mb-3";
+                document.getElementById('profileStatus').innerText = "Premium Member";
+                document.getElementById('profileExpiry').innerText = expDate.toDateString();
+                document.getElementById('profileDays').innerText = diffDays + " days";
+            } else {
+                subStatus = false;
+                document.getElementById('profileEmail').innerText = currentUser.email;
+                document.getElementById('profileStatus').innerText = "Free Member";
+                document.getElementById('profileExpiry').innerText = "N/A";
+                document.getElementById('profileDays').innerText = "0";
+            }
+            loader.style.display = 'none';
+            content.style.display = 'block';
         }
         checkAuth();
 
@@ -464,31 +458,28 @@
         function triggerLoginFromModal() { bootstrap.Modal.getInstance(document.getElementById('premiumWarningModal')).hide(); openLoginModal(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
+        // --- SEARCH ENGINE ---
         function resetHome() { location.reload(); }
-        function toggleAdvSearch() { 
-            const panel = document.getElementById('advSearchForm');
-            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-        }
+        function toggleAdvSearch() { const p = document.getElementById('advSearchForm'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; }
         
         async function showMyBookmarks() {
             if(!currentUser) { openLoginModal(); return; }
-            document.getElementById('homeSection').classList.add('shrunk');
+            document.getElementById('homeSection').classList.add('hero-shrunk'); // Collapse Hero
+            document.getElementById('featuresSection').style.display = 'none';
             document.getElementById('resultsArea').innerHTML = "";
             document.getElementById('readerView').style.display = "none";
             document.getElementById('bookmarkArea').style.display = 'block';
             
             const list = document.getElementById('bookmarkList');
             list.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-secondary"></div></div>';
-            
             const { data } = await _supabase.from('bookmarks').select('*').eq('email', currentUser.email);
             if(!data || data.length === 0) { list.innerHTML = '<div class="alert alert-light border">No bookmarks found.</div>'; return; }
-            
             list.innerHTML = "";
             data.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'result-item';
                 div.onclick = () => loadJudgment({title: item.case_title, citation: item.case_citation, case_anchor: item.case_anchor, github_filename: item.github_filename, is_premium: true});
-                div.innerHTML = `<h5>${item.case_title}</h5><span class="tag-cite">${item.case_citation}</span>`;
+                div.innerHTML = `<h5>${item.case_title}</h5><span class="badge bg-light text-dark border">${item.case_citation}</span>`;
                 list.appendChild(div);
             });
         }
@@ -497,19 +488,19 @@
 
         async function performSearch(page = 1) {
             currentPage = page;
-            const resultsDiv = document.getElementById('resultsArea');
             document.getElementById('readerView').style.display = 'none';
             document.getElementById('bookmarkArea').style.display = 'none';
+            document.getElementById('featuresSection').style.display = 'none';
             document.getElementById('packages').style.display = 'none';
-            document.getElementById('paywallMsg').style.display = 'none';
             
-            // Hero Shrink Logic
-            document.getElementById('homeSection').classList.add('shrunk');
+            // HERO COLLAPSE LOGIC (SCROLL FIX)
+            document.getElementById('homeSection').classList.add('hero-shrunk');
 
+            const resultsDiv = document.getElementById('resultsArea');
             const lawFilterVal = document.getElementById('lawFilterInput').value.trim();
             const searchText = document.getElementById('searchInput').value.trim();
 
-            if (currentSearchType !== 'advanced' && !searchText && !lawFilterVal) { alert("Please enter a keyword."); return; }
+            if (currentSearchType !== 'advanced' && !searchText && !lawFilterVal) { alert("Please enter keyword."); return; }
 
             resultsDiv.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
             
@@ -521,18 +512,16 @@
                 const vol = document.getElementById('advVol').value;
                 const div = document.getElementById('advDiv').value;
                 const pg = document.getElementById('advPage').value;
-                if (!jour || !vol || !div || !pg) { alert("Please fill all fields."); return; }
+                if (!jour || !vol || !div || !pg) { alert("Fill all fields."); return; }
                 queryBuilder = queryBuilder.eq('journal', jour).eq('volume', vol).eq('division', div).eq('page_number', pg);
                 highlightTerm = `${jour} ${vol} ${pg}`;
             } else {
                 const isExact = document.getElementById('exactMatchToggle').checked;
                 let aliasCondition = "";
-                
                 if(lawFilterVal) {
                     for (const [key, aliases] of Object.entries(lawAliases)) {
                         if (key.toLowerCase().includes(lawFilterVal.toLowerCase()) || aliases.some(a => a.toLowerCase().includes(lawFilterVal.toLowerCase()))) {
-                            aliasCondition = aliases.map(a => `headnote.ilike.%${a}%`).join(',');
-                            break;
+                            aliasCondition = aliases.map(a => `headnote.ilike.%${a}%`).join(','); break;
                         }
                     }
                     if(!aliasCondition) aliasCondition = `headnote.ilike.%${lawFilterVal}%`;
@@ -577,15 +566,15 @@
                 const highlightedHeadnote = highlightText(safeHeadnote, highlightTerm || lawFilterVal);
                 
                 let citationHtml = (currentUser && subStatus) 
-                    ? `<span class="tag-cite">${item.citation}</span> ${item.parallel_citations ? '<span class="parallel-cite">| ' + item.parallel_citations + '</span>' : ''}`
-                    : `<span class="badge bg-secondary opacity-50"><i class="fas fa-lock small"></i> Premium</span>`;
+                    ? `<span class="badge bg-light text-dark border">${item.citation}</span> ${item.parallel_citations ? '| ' + item.parallel_citations : ''}`
+                    : `<span class="badge bg-secondary text-white"><i class="fas fa-lock"></i> Premium</span>`;
 
                 const div = document.createElement('div');
                 div.className = 'result-item';
                 div.onclick = () => loadJudgment(item);
                 div.innerHTML = `
                     <h5>${item.title}</h5>
-                    <div class="mb-2">${citationHtml} <span class="badge bg-light text-dark border ms-2">${item.division || 'SC'}</span></div>
+                    <div class="mb-2">${citationHtml} <span class="text-muted small">${item.division || ''}</span></div>
                     <div class="headnote-text">${highlightedHeadnote}</div>
                 `;
                 resultsDiv.appendChild(div);
@@ -625,7 +614,7 @@
 
         async function loadJudgment(item) {
             if (item.is_premium && !currentUser) { new bootstrap.Modal(document.getElementById('premiumWarningModal')).show(); return; }
-            if (item.is_premium && !subStatus) { document.getElementById('resultsArea').innerHTML=''; document.getElementById('paywallMsg').style.display='block'; return; }
+            if (item.is_premium && !subStatus) { document.getElementById('paywallMsg').style.display = 'block'; document.getElementById('resultsArea').innerHTML = ''; return; }
             
             document.getElementById('resultsArea').innerHTML = '';
             document.getElementById('paginationNav').style.display = 'none';
@@ -641,7 +630,6 @@
                 const end = `===End===`;
                 const sIdx = fullText.indexOf(start);
                 let content = sIdx !== -1 ? fullText.substring(sIdx + start.length, fullText.indexOf(end, sIdx)) : "Content Error";
-                
                 const searchTerm = document.getElementById('searchInput').value;
                 if(searchTerm) content = highlightText(content, searchTerm.replace(/\s+/g, '|'));
 
@@ -653,17 +641,17 @@
                             <button class="btn btn-sm btn-outline-dark" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
                         </div>
                     </div>
-                    <h3 class="brand-font fw-bold text-center text-primary mb-2">${item.title}</h3>
+                    <h3 class="fw-bold text-center text-primary mb-2" style="font-family:'Playfair Display'">${item.title}</h3>
                     <p class="text-center text-muted fw-bold mb-4">${item.citation}</p>
-                    <div class="mt-4 text-justify" style="white-space: pre-wrap;">${content}</div>
+                    <div class="mt-4 text-justify" style="white-space: pre-wrap; font-family:'Merriweather'">${content}</div>
                 `;
-            } catch (e) { viewer.innerHTML = "Error loading judgment from server."; }
+            } catch (e) { viewer.innerHTML = "Error loading judgment."; }
         }
 
         async function toggleBookmark(title, citation, anchor, file) {
             if(!currentUser) { openLoginModal(); return; }
             const { error } = await _supabase.from('bookmarks').insert([{ email: currentUser.email, case_title: title, case_citation: citation, case_anchor: anchor, github_filename: file }]);
-            if(error) alert("Already in bookmarks."); else alert("Saved to bookmarks!");
+            if(error) alert("Already saved."); else alert("Saved!");
         }
     </script>
 </body>
