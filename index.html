@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CaseReference | Legal Research Platform</title>
+    <title>CaseReference | Smart Legal Research</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Hind+Siliguri:wght@400;600&display=swap');
         
         :root {
             --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
@@ -40,14 +40,15 @@
         .hero-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 40px; letter-spacing: 1px; }
 
         /* Search Styles */
-        .search-container { max-width: 850px; margin: 0 auto; position: relative; }
+        .search-container { max-width: 900px; margin: 0 auto; position: relative; }
         
         .search-controls { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; align-items: center; flex-wrap: wrap; }
         
         .law-filter-input {
-            width: 280px; border-radius: 30px; border: none; padding: 12px 25px;
+            width: 350px; border-radius: 30px; border: none; padding: 12px 25px;
             font-size: 14px; color: #2c3e50; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             background-color: #fff; outline: none; transition: 0.3s;
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif; /* For Bengali text */
         }
         .law-filter-input:focus { transform: scale(1.02); }
 
@@ -56,7 +57,7 @@
             display: flex; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             transition: 0.3s; height: 65px;
         }
-        .search-input { border: none; outline: none; flex-grow: 1; font-size: 18px; color: #333; background: transparent; height: 100%; }
+        .search-input { border: none; outline: none; flex-grow: 1; font-size: 18px; color: #333; background: transparent; height: 100%; font-family: 'Poppins', 'Hind Siliguri', sans-serif; }
         
         .btn-filter { background: none; border: none; color: #777; font-size: 20px; padding: 0 20px; border-left: 1px solid #eee; height: 35px; display: flex; align-items: center; cursor: pointer; }
         .btn-search { 
@@ -66,7 +67,6 @@
         }
         .btn-search:active { transform: scale(0.95); }
 
-        /* Exact Match Toggle */
         .exact-match-wrapper { display: flex; align-items: center; color: rgba(255,255,255,0.8); font-size: 14px; margin-left: 10px; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
         .form-check-input { cursor: pointer; margin-right: 8px; }
 
@@ -82,7 +82,7 @@
         .result-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         .headnote-text { 
             text-align: justify; font-size: 15px; line-height: 1.7; color: #2c3e50; margin-top: 15px;
-            white-space: pre-wrap; font-family: 'Merriweather', serif;
+            white-space: pre-wrap; font-family: 'Merriweather', 'Hind Siliguri', serif;
         }
         .highlight { background-color: #ffeb3b; padding: 0 2px; border-radius: 2px; font-weight: bold; }
         .parallel-cite { font-size: 13px; color: #555; margin-left: 10px; font-style: italic; }
@@ -101,12 +101,10 @@
         .whatsapp-float { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; line-height: 60px; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s; }
         .whatsapp-float:hover { transform: scale(1.1); }
 
-        /* Modals */
         .modal-header { background: var(--text-dark); color: white; border-bottom: none; }
         .modal-content { border-radius: 15px; border: none; overflow: hidden; }
         .form-label { font-weight: 600; font-size: 13px; text-transform: uppercase; color: #777; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 8px; padding: 12px; font-size: 15px; border: 1px solid #eee; background: #f9f9f9; }
-        .form-control:focus { background: #fff; border-color: var(--accent-color); box-shadow: none; }
         .btn-close-white { filter: invert(1); }
 
         .pagination { justify-content: center; margin-top: 30px; }
@@ -162,19 +160,42 @@
                 <div class="search-controls">
                     <input class="law-filter-input" list="lawList" id="lawFilterInput" placeholder="Filter by Law (e.g. Penal Code)" onchange="triggerSearch(1)">
                     <datalist id="lawList">
-                        <option value="Constitution of Bangladesh">
-                        <option value="Code of Civil Procedure (CPC)">
-                        <option value="Code of Criminal Procedure (CrPC)">
-                        <option value="Penal Code">
-                        <option value="Evidence Act">
-                        <option value="Specific Relief Act">
-                        <option value="Limitation Act">
-                        <option value="Transfer of Property Act">
-                        <option value="Contract Act">
-                        <option value="Nari O Shishu Nirjatan Daman Ain">
-                        <option value="Artha Rin Adalat Ain">
-                        <option value="Digital Security Act">
-                        <option value="Labor Act">
+                        <option value="Constitution of Bangladesh (সংবিধান)">
+                        <option value="Code of Civil Procedure (CPC/দেওয়ানী)">
+                        <option value="Code of Criminal Procedure (CrPC/ফৌজদারী)">
+                        <option value="Penal Code (দণ্ডবিধি)">
+                        <option value="Evidence Act (সাক্ষ্য আইন)">
+                        <option value="Limitation Act (তামাদি আইন)">
+                        <option value="Specific Relief Act (সুনির্দিষ্ট প্রতিকার)">
+                        <option value="Nari O Shishu Nirjatan Daman Ain (নারী ও শিশু)">
+                        <option value="Artha Rin Adalat Ain (অর্থ ঋণ আদালত)">
+                        <option value="Digital Security Act (ডিজিটাল নিরাপত্তা)">
+                        <option value="Narcotics Control Act (মাদক দ্রব্য নিয়ন্ত্রণ)">
+                        <option value="Special Powers Act (বিশেষ ক্ষমতা)">
+                        <option value="Anti-Terrorism Act (সন্ত্রাস বিরোধী)">
+                        <option value="Arms Act (অস্ত্র আইন)">
+                        <option value="Ain Srinkhola Bighnokari (দ্রুত বিচার)">
+                        <option value="Mobile Court Act (মোবাইল কোর্ট)">
+                        <option value="Transfer of Property Act (সম্পত্তি হস্তান্তর)">
+                        <option value="Contract Act (চুক্তি আইন)">
+                        <option value="Registration Act (রেজিস্ট্রেশন)">
+                        <option value="State Acquisition & Tenancy Act (প্রজাস্বত্ব)">
+                        <option value="Vested Property Return Act (অর্পিত সম্পত্তি)">
+                        <option value="Trust Act (ট্রাস্ট আইন)">
+                        <option value="Muslim Family Laws (মুসলিম পারিবারিক আইন)">
+                        <option value="Family Courts Ordinance (পারিবারিক আদালত)">
+                        <option value="Guardians and Wards Act (অভিভাবক ও প্রতিপাল্য)">
+                        <option value="Hindu Law (হিন্দু আইন)">
+                        <option value="Negotiable Instruments Act (NI Act/চেক ডিজঅনার)">
+                        <option value="Bangladesh Labor Act (শ্রম আইন)">
+                        <option value="Companies Act (কোম্পানি আইন)">
+                        <option value="Bank Company Act (ব্যাংক কোম্পানি)">
+                        <option value="Bankruptcy Act (দেউলিয়া আইন)">
+                        <option value="VAT Act (ভ্যাট আইন)">
+                        <option value="Income Tax Ordinance (আয়কর)">
+                        <option value="Customs Act (কাস্টমস)">
+                        <option value="Right to Information Act (তথ্য অধিকার)">
+                        <option value="Road Transport Act (সড়ক পরিবহন)">
                     </datalist>
 
                     <div class="exact-match-wrapper">
@@ -303,10 +324,7 @@
                 <div class="modal-body">
                     <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
                     <h3 class="fw-bold text-dark">Judgment Found!</h3>
-                    <p class="text-muted mt-3 mb-4">
-                        Great news! The case you are looking for is in our database.<br>
-                        However, <b>Advanced Search</b> is a <b>Premium Feature</b>.
-                    </p>
+                    <p class="text-muted mt-3 mb-4">Great news! The case is in our database.<br>However, <b>Advanced Search</b> is a <b>Premium Feature</b>.</p>
                     <div class="d-grid gap-2">
                         <button class="btn btn-dark" onclick="window.location.href='#packages'; bootstrap.Modal.getInstance(document.getElementById('advSearchGateModal')).hide();">View Plans</button>
                         <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
@@ -317,13 +335,9 @@
     </div>
 
     <div class="modal fade" id="loginModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Member Login</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="text-muted mb-3">Login with your email address.</p><input type="email" id="loginEmailInput" class="form-control form-control-lg mb-3" placeholder="name@example.com"><button class="btn btn-dark w-100" onclick="submitLogin()">Send Magic Link</button></div></div></div></div>
-    
     <div class="modal fade" id="checkEmailModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-5"><div class="modal-body"><i class="fas fa-paper-plane fa-4x text-success mb-4"></i><h3 class="fw-bold mb-2">Check Your Email</h3><p class="text-muted">We have sent a login link to your email.</p><button type="button" class="btn btn-outline-success mt-3 px-4 rounded-pill" data-bs-dismiss="modal">OK</button></div></div></div></div>
-    
     <div class="modal fade" id="premiumWarningModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-warning"><h5 class="modal-title text-dark">🔒 Login Required</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center"><p class="lead">This is a <strong>Premium</strong> Judgment.</p><p class="text-muted mb-4">You need to login to read the full text.</p><button class="btn btn-dark w-100" onclick="triggerLoginFromModal()">Login Now</button></div></div></div></div>
-    
     <div class="modal fade" id="paymentModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i> Payment Verification</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4"><form id="paymentForm" action="https://formsubmit.co/caseref.bd@gmail.com" method="POST"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_subject" value="New Payment Request"><div class="mb-3"><label class="form-label">Full Name</label><input type="text" name="Name" class="form-control" required></div><div class="mb-3"><label class="form-label">Mobile Number</label><input type="text" name="Phone" class="form-control" required></div><div class="mb-3"><label class="form-label">Login Email</label><input type="email" name="Email" class="form-control" required></div><div class="row"><div class="col-md-6 mb-3"><label class="form-label">TrxID</label><input type="text" name="TrxID" class="form-control" required></div><div class="col-md-6 mb-3"><label class="form-label">Plan</label><select name="Package" class="form-select" required><option>Monthly (199)</option><option>Quarterly (499)</option><option>Half-Yearly (700)</option><option>Yearly (1200)</option></select></div></div><div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-lg">Submit Request</button></div></form></div></div></div></div>
-    
     <div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><div class="modal-body"><h4 class="fw-bold mb-3">My Account</h4><div id="profileInfo">Checking...</div><button class="btn btn-outline-danger btn-sm mt-3 px-4" onclick="logout()">Logout</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -342,17 +356,41 @@
         const itemsPerPage = 20;
         let currentSearchType = 'simple';
 
-        // Law Aliases (Extended for Smart Search)
+        // --- SMART LAW ALIASES (English + Bangla Mapping) ---
+        // এই লিস্টের বাম পাশের Key টি অবশ্যই <option> এর value এর সাথে মিলতে হবে।
         const lawAliases = {
-            'CPC': ['CPC', 'Civil Procedure'],
-            'CrPC': ['CrPC', 'Criminal Procedure'],
-            'Penal Code': ['Penal Code', 'Penal', 'PC'],
-            'Evidence Act': ['Evidence Act', 'Evidence'],
-            'Nari O Shishu': ['Nari O Shishu', 'Women and Children'],
-            'Constitution': ['Constitution'],
-            'Limitation': ['Limitation'],
-            'Specific Relief': ['Specific Relief']
+            'Constitution of Bangladesh (সংবিধান)': ['Constitution', 'Konstitution', 'Art.', 'Article', 'সংবিধান'],
+            'Code of Civil Procedure (CPC/দেওয়ানী)': ['CPC', 'Code of Civil Procedure', 'Civil Procedure Code', 'C.P.C', 'দেওয়ানী কার্যবিধি', 'Order', 'Rule'],
+            'Code of Criminal Procedure (CrPC/ফৌজদারী)': ['CrPC', 'Code of Criminal Procedure', 'Criminal Procedure Code', 'Cr.P.C', 'ফৌজদারী কার্যবিধি', 'Section 144', '498'],
+            'Penal Code (দণ্ডবিধি)': ['Penal Code', 'Penal', 'PC', 'P.C', 'dondobidhi', 'দণ্ডবিধি', '302', '304'],
+            'Evidence Act (সাক্ষ্য আইন)': ['Evidence Act', 'Evidence', 'sakkho ain', 'সাক্ষ্য আইন'],
+            'Limitation Act (তামাদি আইন)': ['Limitation Act', 'Limitation', 'Section 5', 'তামাদি'],
+            'Specific Relief Act (সুনির্দিষ্ট প্রতিকার)': ['Specific Relief', 'SR Act', 'S.R. Act', 'সুনির্দিষ্ট প্রতিকার'],
+            'Nari O Shishu Nirjatan Daman Ain (নারী ও শিশু)': ['Nari O Shishu', 'Women and Children', 'Nari-O-Shishu', 'নারী ও শিশু', 'নারী শিশু'],
+            'Artha Rin Adalat Ain (অর্থ ঋণ আদালত)': ['Artha Rin', 'Money Loan Court', 'Artha Rin Adalat', 'অর্থ ঋণ'],
+            'Digital Security Act (ডিজিটাল নিরাপত্তা)': ['Digital Security', 'Cyber Security', 'ICT Act', 'ডিজিটাল নিরাপত্তা'],
+            'Narcotics Control Act (মাদক দ্রব্য নিয়ন্ত্রণ)': ['Narcotics', 'Madok', 'Drug', 'Table 9(Ka)', 'মাদক', 'Heroin', 'Yaba'],
+            'Special Powers Act (বিশেষ ক্ষমতা)': ['Special Powers Act', 'SPA', 'Special Powers', 'বিশেষ ক্ষমতা'],
+            'Anti-Terrorism Act (সন্ত্রাস বিরোধী)': ['Anti-Terrorism', 'Terrorism', 'সন্ত্রাস বিরোধী'],
+            'Arms Act (অস্ত্র আইন)': ['Arms Act', 'অস্ত্র আইন', 'Arms'],
+            'Ain Srinkhola Bighnokari (দ্রুত বিচার)': ['Druto Bichar', 'Speedy Trial', 'দ্রুত বিচার'],
+            'Mobile Court Act (মোবাইল কোর্ট)': ['Mobile Court', 'মোবাইল কোর্ট'],
+            'Transfer of Property Act (সম্পত্তি হস্তান্তর)': ['Transfer of Property', 'TP Act', 'T.P. Act', 'সম্পত্তি হস্তান্তর'],
+            'Contract Act (চুক্তি আইন)': ['Contract Act', 'চুক্তি আইন'],
+            'Registration Act (রেজিস্ট্রেশন)': ['Registration Act', 'রেজিস্ট্রেশন'],
+            'State Acquisition & Tenancy Act (প্রজাস্বত্ব)': ['State Acquisition', 'SAT Act', 'Non-Agricultural', 'প্রজাস্বত্ব', 'Land Survey'],
+            'Vested Property Return Act (অর্পিত সম্পত্তি)': ['Vested Property', 'Enemy Property', 'অর্পিত সম্পত্তি', 'Vested'],
+            'Muslim Family Laws (মুসলিম পারিবারিক আইন)': ['Muslim Family', 'Muslim Law', 'মুসলিম পারিবারিক'],
+            'Family Courts Ordinance (পারিবারিক আদালত)': ['Family Courts', 'Family Court', 'পারিবারিক আদালত'],
+            'Guardians and Wards Act (অভিভাবক ও প্রতিপাল্য)': ['Guardians and Wards', 'Guardian', 'অভিভাবক'],
+            'Negotiable Instruments Act (NI Act/চেক ডিজঅনার)': ['Negotiable Instruments', 'NI Act', 'N.I. Act', '138', 'Dishonour of Cheque', 'চেক ডিজঅনার'],
+            'Bangladesh Labor Act (শ্রম আইন)': ['Labor Act', 'Labour Act', 'Labour Law', 'Employment of Labour', 'Srom Ain', 'শ্রম আইন'],
+            'Companies Act (কোম্পানি আইন)': ['Companies Act', 'Company Law', 'Winding up', 'কোম্পানি'],
+            'VAT Act (ভ্যাট আইন)': ['Value Added Tax', 'VAT', 'ভ্যাট'],
+            'Income Tax Ordinance (আয়কর)': ['Income Tax', 'Tax', 'আয়কর'],
+            'Right to Information Act (তথ্য অধিকার)': ['Right to Information', 'RTI', 'তথ্য অধিকার']
         };
+
         const stopwords = ['a', 'an', 'the', 'of', 'in', 'and', 'or', 'is', 'are', 'was', 'were', 'be', 'to', 'for', 'with', 'on', 'at', 'by', 'from', 'shall', 'will', 'am'];
 
         async function checkAuth() {
@@ -425,24 +463,27 @@
             } else {
                 const isExact = document.getElementById('exactMatchToggle').checked;
                 
+                // Smart Law Filter Logic (Alias)
+                let aliasCondition = "";
                 if(lawFilterVal) {
-                    let searchKey = lawFilterVal;
-                    for (const [key, aliases] of Object.entries(lawAliases)) {
-                        if (aliases.some(alias => lawFilterVal.toLowerCase().includes(alias.toLowerCase()))) {
-                            searchKey = aliases.join('|'); break;
-                        }
-                    }
+                    const aliases = lawAliases[lawFilterVal] || [lawFilterVal];
+                    // Construct search condition for aliases
+                    aliasCondition = aliases.map(a => `headnote.ilike.%${a}%`).join(',');
                 }
 
                 if (isExact) {
                     let queryStr = `headnote.ilike.%${searchText}%,title.ilike.%${searchText}%`;
-                    if(lawFilterVal) queryBuilder = queryBuilder.ilike('headnote', `%${lawFilterVal}%`).or(queryStr);
+                    if(aliasCondition) queryBuilder = queryBuilder.or(aliasCondition).or(queryStr); // Filter chain logic approximation for Supabase client
+                    // Precise chaining: AND (Law) OR (Text) is tricky. We'll prioritize Law Matches.
+                    // If Law selected: Match Law Aliases AND (if text present) Match Text.
+                    // Simplified: Match Law OR Match Text (broad)
                     else queryBuilder = queryBuilder.or(queryStr);
                     highlightTerm = searchText;
                 } else {
                     const words = searchText.split(/\s+/).filter(w => !stopwords.includes(w.toLowerCase()) && w.length > 1);
                     let searchCondition = words.length > 0 ? words.map(w => `headnote.ilike.%${w}%,title.ilike.%${w}%`).join(',') : `headnote.ilike.%${searchText}%,title.ilike.%${searchText}%`;
-                    if(lawFilterVal) queryBuilder = queryBuilder.ilike('headnote', `%${lawFilterVal}%`);
+                    
+                    if(aliasCondition) queryBuilder = queryBuilder.or(aliasCondition);
                     if(searchCondition) queryBuilder = queryBuilder.or(searchCondition);
                     highlightTerm = words.join('|');
                 }
