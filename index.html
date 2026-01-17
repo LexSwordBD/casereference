@@ -384,22 +384,54 @@
         let currentSearchType = 'simple';
 
         // --- RESTORED LOGIC ---
+        // --- ১. আপডেটেড স্মার্ট আইন তালিকা (Smart Law Mapping) ---
+        // বাম পাশের নামগুলো হুবহু আপনার HTML Datalist এর নামের সাথে মিল থাকতে হবে
         const lawAliases = {
-            'Constitution': ['Constitution', 'Konstitution', 'Art.', 'Article', 'সংবিধান'],
-            'Code of Civil Procedure': ['CPC', 'Code of Civil Procedure', 'Civil Procedure Code', 'C.P.C', 'দেওয়ানী কার্যবিধি', 'Order', 'Rule'],
-            'Code of Criminal Procedure': ['CrPC', 'Code of Criminal Procedure', 'Criminal Procedure Code', 'Cr.P.C', 'ফৌজদারী কার্যবিধি', 'Section 144', '498'],
-            'Penal Code': ['Penal Code', 'Penal', 'PC', 'P.C', 'dondobidhi', 'দণ্ডবিধি', '302', '304'],
-            'Evidence Act': ['Evidence Act', 'Evidence', 'sakkho ain', 'সাক্ষ্য আইন'],
-            'Limitation Act': ['Limitation Act', 'Limitation', 'Section 5', 'তামাদি'],
-            'Specific Relief Act': ['Specific Relief', 'SR Act', 'S.R. Act', 'সুনির্দিষ্ট প্রতিকার'],
-            'Nari O Shishu': ['Nari O Shishu', 'Women and Children', 'Nari-O-Shishu', 'নারী ও শিশু'],
-            'Artha Rin': ['Artha Rin', 'Money Loan Court', 'Artha Rin Adalat', 'অর্থ ঋণ'],
-            'Digital Security': ['Digital Security', 'Cyber Security', 'ICT Act', 'ডিজিটাল নিরাপত্তা'],
-            'Narcotics': ['Narcotics', 'Madok', 'Drug', 'Table 9(Ka)', 'মাদক', 'Heroin', 'Yaba'],
-            'Labor Act': ['Labor Act', 'Labour Act', 'Labour Law', 'Employment of Labour', 'Srom Ain', 'শ্রম আইন'],
-            'Negotiable Instruments': ['Negotiable Instruments', 'NI Act', 'N.I. Act', '138', 'Dishonour of Cheque', 'চেক ডিজঅনার'],
-            'Companies Act': ['Companies Act', 'Company Law', 'Winding up', 'কোম্পানি'],
-            'Transfer of Property': ['Transfer of Property', 'TP Act', 'T.P. Act', 'সম্পত্তি হস্তান্তর']
+            'Constitution of Bangladesh (সংবিধান)': ['Constitution', 'Konstitution', 'Art.', 'Article', 'সংবিধান'],
+            
+            // CPC এর জন্য: 'Code of Civil Procedure', 'CPC', 'Order', 'Rule' খুঁজবে
+            'Code of Civil Procedure (CPC/দেওয়ানী)': ['CPC', 'Code of Civil Procedure', 'Civil Procedure', 'C.P.C', 'দেওয়ানী', 'Order', 'Rule'],
+            
+            // CrPC এর জন্য: 'CrPC', 'Criminal Procedure', '561A', '498' খুঁজবে
+            'Code of Criminal Procedure (CrPC/ফৌজদারী)': ['CrPC', 'Code of Criminal Procedure', 'Criminal Procedure', 'Cr.P.C', 'ফৌজদারী', '561A', '498', 's. 144'],
+            
+            // Penal Code এর জন্য: 'Penal', 'PC', 'dondobidhi', '302' খুঁজবে। সাল বা রোমান সংখ্যা থাকলেও 'Penal' শব্দটি থাকায় ধরে ফেলবে।
+            'Penal Code (দণ্ডবিধি)': ['Penal', 'PC', 'P.C', 'dondobidhi', 'দণ্ডবিধি', '302', '304', '1860'],
+            
+            'Evidence Act (সাক্ষ্য আইন)': ['Evidence', 'sakkho', 'sakhho', 'সাক্ষ্য'],
+            'Limitation Act (তামাদি আইন)': ['Limitation', 'Section 5', 'condonation', 'তামাদি'],
+            'Specific Relief Act (সুনির্দিষ্ট প্রতিকার)': ['Specific Relief', 'SR Act', 'S.R. Act', 'সুনির্দিষ্ট প্রতিকার'],
+            
+            'Nari O Shishu Nirjatan Daman Ain (নারী ও শিশু)': ['Nari O Shishu', 'Women and Children', 'Nari-O-Shishu', 'নারী ও শিশু', 'নারী শিশু', 'Shishu'],
+            
+            'Artha Rin Adalat Ain (অর্থ ঋণ আদালত)': ['Artha Rin', 'Money Loan', 'Adalat', 'অর্থ ঋণ'],
+            'Digital Security Act (ডিজিটাল নিরাপত্তা)': ['Digital Security', 'Cyber', 'ICT Act', 'ডিজিটাল নিরাপত্তা'],
+            'Narcotics Control Act (মাদক দ্রব্য নিয়ন্ত্রণ)': ['Narcotics', 'Madok', 'Drug', 'Table', 'Yaba', 'Heroin', 'Phensedyl', 'মাদক'],
+            'Special Powers Act (বিশেষ ক্ষমতা)': ['Special Powers', 'SPA', 'Special Power', 'বিশেষ ক্ষমতা'],
+            'Anti-Terrorism Act (সন্ত্রাস বিরোধী)': ['Anti-Terrorism', 'Terrorism', 'সন্ত্রাস'],
+            'Arms Act (অস্ত্র আইন)': ['Arms Act', 'অস্ত্র'],
+            'Ain Srinkhola Bighnokari (দ্রুত বিচার)': ['Druto Bichar', 'Speedy Trial', 'দ্রুত বিচার'],
+            'Mobile Court Act (মোবাইল কোর্ট)': ['Mobile Court', 'মোবাইল কোর্ট'],
+            
+            'Transfer of Property Act (সম্পত্তি হস্তান্তর)': ['Transfer of Property', 'TP Act', 'T.P. Act', 'সম্পত্তি হস্তান্তর'],
+            'Contract Act (চুক্তি আইন)': ['Contract Act', 'Agreement', 'চুক্তি'],
+            'Registration Act (রেজিস্ট্রেশন)': ['Registration', 'Section 17', 'রেজিস্ট্রেশন'],
+            'State Acquisition & Tenancy Act (প্রজাস্বত্ব)': ['State Acquisition', 'SAT Act', 'Tenancy', 'প্রজাস্বত্ব'],
+            'Vested Property Return Act (অর্পিত সম্পত্তি)': ['Vested Property', 'Enemy Property', 'অর্পিত', 'Vested'],
+            'Trust Act (ট্রাস্ট আইন)': ['Trust Act', 'Trustee'],
+            
+            'Muslim Family Laws (মুসলিম পারিবারিক আইন)': ['Muslim Family', 'MFLO', 'Denmohar', 'Dower', 'Talaq'],
+            'Family Courts Ordinance (পারিবারিক আদালত)': ['Family Courts', 'Family Court', 'পারিবারিক'],
+            'Guardians and Wards Act (অভিভাবক ও প্রতিপাল্য)': ['Guardians and Wards', 'Guardian', 'Custody', 'অভিভাবক'],
+            
+            'Negotiable Instruments Act (NI Act/চেক ডিজঅনার)': ['Negotiable Instruments', 'NI Act', 'N.I. Act', '138', 'Cheque', 'Dishonour', 'চেক'],
+            'Bangladesh Labor Act (শ্রম আইন)': ['Labor Act', 'Labour', 'Employment', 'Worker', 'শ্রম'],
+            'Companies Act (কোম্পানি আইন)': ['Companies Act', 'Company Law', 'Winding up', 'কোম্পানি'],
+            
+            'VAT Act (ভ্যাট আইন)': ['Value Added Tax', 'VAT', 'ভ্যাট', 'Musok'],
+            'Income Tax Ordinance (আয়কর)': ['Income Tax', 'Tax', 'Taxes', 'আয়কর'],
+            'Customs Act (কাস্টমস)': ['Customs', 'Custom'],
+            'Right to Information Act (তথ্য অধিকার)': ['Right to Information', 'RTI', 'তথ্য অধিকার']
         };
         const stopwords = ['a', 'an', 'the', 'of', 'in', 'and', 'or', 'is', 'are', 'was', 'were', 'be', 'to', 'for', 'with', 'on', 'at', 'by', 'from', 'shall', 'will', 'am'];
 
@@ -516,28 +548,59 @@
                 queryBuilder = queryBuilder.eq('journal', jour).eq('volume', vol).eq('division', div).eq('page_number', pg);
                 highlightTerm = `${jour} ${vol} ${pg}`;
             } else {
+                // --- ২. আপডেটেড সার্চ লজিক ---
                 const isExact = document.getElementById('exactMatchToggle').checked;
+                
+                // ক) ইউজার ড্রপডাউন থেকে কিছু সিলেক্ট করেছে কিনা চেক করা
                 let aliasCondition = "";
                 if(lawFilterVal) {
-                    for (const [key, aliases] of Object.entries(lawAliases)) {
-                        if (key.toLowerCase().includes(lawFilterVal.toLowerCase()) || aliases.some(a => a.toLowerCase().includes(lawFilterVal.toLowerCase()))) {
-                            aliasCondition = aliases.map(a => `headnote.ilike.%${a}%`).join(','); break;
-                        }
-                    }
-                    if(!aliasCondition) aliasCondition = `headnote.ilike.%${lawFilterVal}%`;
+                    // ড্রপডাউনের ভ্যালু অনুযায়ী আমাদের 'ডাকনামের তালিকা' (lawAliases) থেকে শব্দগুলো আনব
+                    // যেমন: ইউজার 'CPC' সিলেক্ট করলে আমরা পাব: ['CPC', 'Code of Civil Procedure', 'Order', ...]
+                    const aliases = lawAliases[lawFilterVal] || [lawFilterVal];
+                    
+                    // এবার সুপাবেজকে বলব: হেডনোটে বা টাইটেলে এই শব্দগুলোর যেকোনো একটা থাকলেই হবে
+                    // আমরা 'headnote' এবং 'title' দুটোতেই খুঁজব যাতে মিস না হয়
+                    const headnoteChecks = aliases.map(a => `headnote.ilike.%${a}%`).join(',');
+                    const titleChecks = aliases.map(a => `title.ilike.%${a}%`).join(',');
+                    
+                    // সব মিলিয়ে একটি বড় শর্ত তৈরি হলো
+                    aliasCondition = headnoteChecks + ',' + titleChecks;
                 }
 
                 if (isExact) {
+                    // এক্সাক্ট ম্যাচ লজিক
                     let queryStr = `headnote.ilike.%${searchText}%,title.ilike.%${searchText}%`;
-                    if(aliasCondition) queryBuilder = queryBuilder.or(aliasCondition).or(queryStr);
-                    else queryBuilder = queryBuilder.or(queryStr);
+                    if(aliasCondition) {
+                        // যদি ল-ফিল্টার থাকে, তবে ল-ফিল্টার ম্যাচ করতে হবে অথবা টেক্সট ম্যাচ করতে হবে
+                        queryBuilder = queryBuilder.or(aliasCondition).or(queryStr);
+                    } else {
+                        queryBuilder = queryBuilder.or(queryStr);
+                    }
                     highlightTerm = searchText;
                 } else {
+                    // নরমাল সার্চ লজিক (স্মার্ট)
                     const words = searchText.split(/\s+/).filter(w => !stopwords.includes(w.toLowerCase()) && w.length > 1);
-                    let searchCondition = words.length > 0 ? words.map(w => `headnote.ilike.%${w}%,title.ilike.%${w}%`).join(',') : `headnote.ilike.%${searchText}%,title.ilike.%${searchText}%`;
                     
-                    if(aliasCondition) queryBuilder = queryBuilder.or(aliasCondition);
-                    if(searchCondition) queryBuilder = queryBuilder.or(searchCondition);
+                    // ইউজার বক্সে যা লিখেছে তার জন্য কুয়েরি
+                    let textCondition = "";
+                    if (words.length > 0) {
+                        textCondition = words.map(w => `headnote.ilike.%${w}%,title.ilike.%${w}%`).join(',');
+                    } else if (searchText) {
+                        textCondition = `headnote.ilike.%${searchText}%,title.ilike.%${searchText}%`;
+                    }
+                    
+                    // সুপাবেজকে ফাইনাল অর্ডার দেওয়া
+                    if(aliasCondition && textCondition) {
+                        // আইনও সিলেক্ট করেছে, আবার বক্সেও লিখেছে -> দুটোই খুঁজব
+                        queryBuilder = queryBuilder.or(aliasCondition + ',' + textCondition);
+                    } else if (aliasCondition) {
+                        // শুধু আইন সিলেক্ট করেছে
+                        queryBuilder = queryBuilder.or(aliasCondition);
+                    } else if (textCondition) {
+                        // শুধু বক্সে লিখেছে
+                        queryBuilder = queryBuilder.or(textCondition);
+                    }
+                    
                     highlightTerm = words.join('|');
                 }
             }
